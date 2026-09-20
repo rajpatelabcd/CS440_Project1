@@ -1,0 +1,8 @@
+here is plan:
+
+there are two parts in the project 1. open cells using rules
+                                   2. put bot, button and fire and move them using rules
+
+My idea is to put give each cell left, right top and bottom and isfire, isopen, hasbutton
+
+we are keeping track of which cell is open and which is closed, which has fire and which has switch
