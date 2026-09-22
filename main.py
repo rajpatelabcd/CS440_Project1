@@ -1,15 +1,16 @@
 import random
 import time
 
+
 # * is closed
 # . is open
 # b is bot
 # s is switch
 # f is fire 
 
+q = 0.4
 
 GRID_SIZE = 5
-
 grid = [['*' for _ in range(GRID_SIZE)] for _ in range(GRID_SIZE)]
 
 
@@ -129,23 +130,42 @@ bot_cell =  open_cells[r1]
 bot_row, bot_column = bot_cell
 grid[bot_row][bot_column] = 'b'
 
-r2 = random.choice(list(range(0, r1)) + list(range(r1 + 1, len(open_cells) + 1)))
+r2 = random.choice(list(range(0, r1)) + list(range(r1 + 1, len(open_cells))))
 switch_cell = open_cells[r2]
 switch_row, switch_column = switch_cell
 
 grid[switch_row][switch_column] = 's'
 
-for i in range(2):
+for i in range(10):
     r3 = random.randint(0, len(open_cells) - 1)
     init_fire_cell = open_cells[r3]
     init_fire_cell_row, init_fire_cell_column = init_fire_cell
 
-    # while (grid[init_fire_cell_row][init_fire_cell_column] != '.'):
-    #     r3 = random.randint(0, len(open_cells) - 1)
-    #     init_fire_cell = open_cells[r3]
-    #     init_fire_cell_row, init_fire_cell_column = init_fire_cell
+    while (grid[init_fire_cell_row][init_fire_cell_column] != '.'):
+        r3 = random.randint(0, len(open_cells) - 1)
+        init_fire_cell = open_cells[r3]
+        init_fire_cell_row, init_fire_cell_column = init_fire_cell
+        break;
     grid[init_fire_cell_row][init_fire_cell_column] = 'f'
+    fire_cell_neighbor = get_neighbors(init_fire_cell)
 
+    k = 0
+    for n in fire_cell_neighbor.values():
+        r, c = n
+        if(grid[r][c] == 'f'):
+            k = k + 1 
+
+    flammability = random.random()
+    probability = 1 - (1 - q) ** k
+    print(f'The k is {k} flammability is {flammability} prob is {probability}')
+    # for now this is not random  !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! [puting neighbor cell on fire]
+    if (probability > flammability):
+        print('yes')
+        for n in fire_cell_neighbor.values():
+            r, c = n 
+            if(grid[r][c] == '.'):
+                grid[r][c] = 'p'
+                break        
     print(f"Iteration {i}")
     time.sleep(1)
 
