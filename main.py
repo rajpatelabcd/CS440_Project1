@@ -33,28 +33,38 @@ print('\n\n')
 while valid_cells:
 
     rand = random.randint(0, len(valid_cells) - 1)
+
     valid_cell_to_open = valid_cells.pop(rand)
+
     valid_cell_row, valid_cell_column = valid_cell_to_open
 
-    print('random cells we picked to open: ', valid_cell_to_open)
+    print('random cell we picked to open: ', valid_cell_to_open)
 
-    if grid[row][column] == '.':
+    # check whether this cell is already open
+    if grid[valid_cell_row][valid_cell_column] == '.':
         continue
-    print('\n\n')
 
     neighbors = get_neighbors(valid_cell_to_open)
 
-    opened_neighbors = sum( 1 for r, c in neighbors.values() if grid[r][c] == '.')
+    opened_neighbors = sum(
+        1
+        for r, c in neighbors.values()
+        if grid[r][c] == '.'
+    )
+
+    # cell must have exactly one open neighbor
     if opened_neighbors != 1:
         continue
-    grid[row][column] = '.'
 
+    # open the selected cell
+    grid[valid_cell_row][valid_cell_column] = '.'
 
+    # add blocked neighbors as possible candidates
     for n in neighbors.values():
+
         r, c = n
+
         if grid[r][c] == '*' and n not in valid_cells:
             valid_cells.append(n)
-    print('the list after adding the valid neighbor: ', valid_cells)
-    print('\n\n')
-    for row in grid:
-        print(row)
+for row in grid:
+    print(row)
