@@ -49,7 +49,6 @@ def set_maze():
             continue
 
         neighbors = get_neighbors(valid_cell_to_open)
-
         opened_neighbors = sum(
             1
             for r, c in neighbors.values()
@@ -72,9 +71,10 @@ def set_maze():
         print(row)
 
     dead_ends = []
+
+    #  find valid dead ends and add to list 
     for grid_row, row in enumerate(grid):
         for grid_column, val in enumerate(row):           
-
             r = (grid_row, grid_column)
             neighbors2 = get_neighbors(r)
             opened_neighbors = sum(
@@ -85,12 +85,12 @@ def set_maze():
             if (opened_neighbors == 1) and (grid[grid_row][grid_column] == '.'):
                 dead_ends.append((grid_row, grid_column))
 
+    # for random dead ends open one of the neighbor cell until half list is done
     for i in range (len(dead_ends) // 2):
         rand_num = random.randint(0, len(dead_ends) - 1)
         dead_end_neighbors = get_neighbors(dead_ends[rand_num])
-        # print(dead_ends[rand_num])
 
-        # for now this is not random 
+        # for now this is not random  !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
         for d in dead_end_neighbors:
             print(f'this is dead end {dead_ends[rand_num]}')
             l, m = dead_end_neighbors[d]
@@ -99,7 +99,5 @@ def set_maze():
                 print(f'     this one to open {dead_end_neighbors[d]}')
                 dead_end_neighbors[d] == '.';
                 break;
-
-
 
 set_maze()
