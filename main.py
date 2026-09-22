@@ -4,6 +4,7 @@ GRID_SIZE = 5
 
 grid = [['*' for _ in range(GRID_SIZE)] for _ in range(GRID_SIZE)]
 
+
 def get_neighbors(pos):
     x, y = pos
     neighbors = {}
@@ -15,9 +16,7 @@ def get_neighbors(pos):
 
     return neighbors
 
-
-
-def set_maze():
+def setup_grid():
 
     # the first cell to open
     open_cell = (random.randint(1, GRID_SIZE - 2), random.randint(1, GRID_SIZE - 2))
@@ -67,8 +66,8 @@ def set_maze():
             r, c = n
             if grid[r][c] == '*' and n not in valid_cells:
                 valid_cells.append(n)
-    for row in grid:
-        print(row)
+    # for row in grid:
+    #     print(row)
 
     dead_ends = []
 
@@ -92,12 +91,39 @@ def set_maze():
 
         # for now this is not random  !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
         for d in dead_end_neighbors:
-            print(f'this is dead end {dead_ends[rand_num]}')
+            # print(f'this is dead end {dead_ends[rand_num]}')
             l, m = dead_end_neighbors[d]
 
             if (grid[l][m] == '*'):
-                print(f'     this one to open {dead_end_neighbors[d]}')
+                # print(f'     this one to open {dead_end_neighbors[d]}')
                 dead_end_neighbors[d] == '.';
                 break;
 
-set_maze()
+setup_grid()
+
+# listing open and closed cell 
+open_cells = [
+    (r_idx, c_idx) 
+    for r_idx, row in enumerate(grid) 
+    for c_idx, val in enumerate(row) 
+    if val == '*'
+]
+closed_cells = [
+    (r_idx, c_idx) 
+    for r_idx, row in enumerate(grid) 
+    for c_idx, val in enumerate(row) 
+    if val == '.'
+]
+
+# placing bot and switch
+r1 = random.randint(0, len(open_cells) - 1)
+bot_row, bot_column = open_cells[r1]
+grid[bot_row][bot_column] = 'b'
+
+r2 = random.choice(list(range(0, r1)) + list(range(r1 + 1, len(open_cells) + 1)))
+column_row, switch_column = open_cells[r2]
+
+grid[column_row][switch_column] = 's'
+
+for row in grid:
+    print(row)
