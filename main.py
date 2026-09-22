@@ -72,19 +72,34 @@ def set_maze():
         print(row)
 
     dead_ends = []
-    for raj, row in enumerate(grid):
-        for yug, val in enumerate(row):           
+    for grid_row, row in enumerate(grid):
+        for grid_column, val in enumerate(row):           
 
-            r = (raj, yug)
+            r = (grid_row, grid_column)
             neighbors2 = get_neighbors(r)
             opened_neighbors = sum(
                 1
                 for r, c in neighbors2.values()
                 if grid[r][c] == '.'
             )
-            if opened_neighbors == 1:
-                dead_ends.append((raj, yug))
-    print(dead_ends)
+            if (opened_neighbors == 1) and (grid[grid_row][grid_column] == '.'):
+                dead_ends.append((grid_row, grid_column))
+
+    for i in range (len(dead_ends) // 2):
+        rand_num = random.randint(0, len(dead_ends) - 1)
+        dead_end_neighbors = get_neighbors(dead_ends[rand_num])
+        # print(dead_ends[rand_num])
+
+        # for now this is not random 
+        for d in dead_end_neighbors:
+            print(f'this is dead end {dead_ends[rand_num]}')
+            l, m = dead_end_neighbors[d]
+
+            if (grid[l][m] == '*'):
+                print(f'     this one to open {dead_end_neighbors[d]}')
+                dead_end_neighbors[d] == '.';
+                break;
+
 
 
 set_maze()
