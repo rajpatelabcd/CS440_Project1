@@ -15,56 +15,76 @@ def get_neighbors(pos):
 
     return neighbors
 
-# the first cell to open
-open_cell = (random.randint(1, GRID_SIZE - 2), random.randint(1, GRID_SIZE - 2))
-row, column = open_cell
-grid[row][column] = '.' 
 
-# list of all cells which are valid and we can open (with exectly one neighbor)
 
-valid_cells = []
-for neighbor in get_neighbors(open_cell).values():
-    valid_cells.append(neighbor)
+def set_maze():
 
-print('initial valid cells are: ', valid_cells)
-print('\n\n')
+    # the first cell to open
+    open_cell = (random.randint(1, GRID_SIZE - 2), random.randint(1, GRID_SIZE - 2))
+    row, column = open_cell
+    grid[row][column] = '.' 
 
-# look through each valid cell and randomlly open cell 
-while valid_cells:
+    # list of all cells which are valid and we can open (with exectly one neighbor)
 
-    rand = random.randint(0, len(valid_cells) - 1)
+    valid_cells = []
+    for neighbor in get_neighbors(open_cell).values():
+        valid_cells.append(neighbor)
 
-    valid_cell_to_open = valid_cells.pop(rand)
+    # print('initial valid cells are: ', valid_cells)
+    # print('\n\n')
 
-    valid_cell_row, valid_cell_column = valid_cell_to_open
+    # look through each valid cell and randomlly open cell 
 
-    print('random cell we picked to open: ', valid_cell_to_open)
+    while valid_cells:
+        rand = random.randint(0, len(valid_cells) - 1)
 
-    # check whether this cell is already open
-    if grid[valid_cell_row][valid_cell_column] == '.':
-        continue
+        valid_cell_to_open = valid_cells.pop(rand)
 
-    neighbors = get_neighbors(valid_cell_to_open)
+        valid_cell_row, valid_cell_column = valid_cell_to_open
 
-    opened_neighbors = sum(
-        1
-        for r, c in neighbors.values()
-        if grid[r][c] == '.'
-    )
+        # print('random cell we picked to open: ', valid_cell_to_open)
 
-    # cell must have exactly one open neighbor
-    if opened_neighbors != 1:
-        continue
+        # check whether this cell is already open
+        if grid[valid_cell_row][valid_cell_column] == '.':
+            continue
 
-    # open the selected cell
-    grid[valid_cell_row][valid_cell_column] = '.'
+        neighbors = get_neighbors(valid_cell_to_open)
 
-    # add blocked neighbors as possible candidates
-    for n in neighbors.values():
+        opened_neighbors = sum(
+            1
+            for r, c in neighbors.values()
+            if grid[r][c] == '.'
+        )
 
-        r, c = n
+        # cell must have exactly one open neighbor
+        if opened_neighbors != 1:
+            continue
 
-        if grid[r][c] == '*' and n not in valid_cells:
-            valid_cells.append(n)
-for row in grid:
-    print(row)
+        # open the selected cell
+        grid[valid_cell_row][valid_cell_column] = '.'
+
+        # add blocked neighbors as possible candidates
+        for n in neighbors.values():
+            r, c = n
+            if grid[r][c] == '*' and n not in valid_cells:
+                valid_cells.append(n)
+    for row in grid:
+        print(row)
+
+    dead_ends = []
+    for raj, row in enumerate(grid):
+        for yug, val in enumerate(row):           
+
+            r = (raj, yug)
+            neighbors2 = get_neighbors(r)
+            opened_neighbors = sum(
+                1
+                for r, c in neighbors2.values()
+                if grid[r][c] == '.'
+            )
+            if opened_neighbors == 1:
+                dead_ends.append((raj, yug))
+    print(dead_ends)
+
+
+set_maze()
