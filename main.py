@@ -1,4 +1,12 @@
 import random
+import time
+
+# * is closed
+# . is open
+# b is bot
+# s is switch
+# f is fire 
+
 
 GRID_SIZE = 5
 
@@ -117,13 +125,29 @@ closed_cells = [
 
 # placing bot and switch
 r1 = random.randint(0, len(open_cells) - 1)
-bot_row, bot_column = open_cells[r1]
+bot_cell =  open_cells[r1]
+bot_row, bot_column = bot_cell
 grid[bot_row][bot_column] = 'b'
 
 r2 = random.choice(list(range(0, r1)) + list(range(r1 + 1, len(open_cells) + 1)))
-column_row, switch_column = open_cells[r2]
+switch_cell = open_cells[r2]
+switch_row, switch_column = switch_cell
 
-grid[column_row][switch_column] = 's'
+grid[switch_row][switch_column] = 's'
+
+for i in range(2):
+    r3 = random.randint(0, len(open_cells) - 1)
+    init_fire_cell = open_cells[r3]
+    init_fire_cell_row, init_fire_cell_column = init_fire_cell
+
+    # while (grid[init_fire_cell_row][init_fire_cell_column] != '.'):
+    #     r3 = random.randint(0, len(open_cells) - 1)
+    #     init_fire_cell = open_cells[r3]
+    #     init_fire_cell_row, init_fire_cell_column = init_fire_cell
+    grid[init_fire_cell_row][init_fire_cell_column] = 'f'
+
+    print(f"Iteration {i}")
+    time.sleep(1)
 
 for row in grid:
     print(row)
