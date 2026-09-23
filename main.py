@@ -31,6 +31,8 @@ def get_direction(b_cell, s_cell):
     r1, c1 = b_cell
     r2, c2 = s_cell
 
+    if((r1 == r2) and (c1 == c2)):
+        return 'success'
     if((r2 < r1) and (c2 < c1)):
         return ((r1 - 1, c1), (r1, c1 - 1)) # up or left 
     if((r2 < r1) and (c2 > c1)):
@@ -48,8 +50,6 @@ def get_direction(b_cell, s_cell):
     if(c2 > c1):
         return(r1, c1 - 1) # left
 
-    if((r1 == r2) and (c1 == c2)):
-        return 'success'
 
 def setup_grid():
 
@@ -186,15 +186,22 @@ for i in range(1):
     # print(f"Iteration {i}")
     time.sleep(1)
 
-print(f'bot {bot_cell}')
-print(f'switch {switch_cell}')
+print(f'bot was here {bot_cell}')
+print(f'switch was here {switch_cell}')
+
 while (bot_cell != switch_cell):
     directions = get_direction(bot_cell, switch_cell)
-    picked_direction = random.choice(directions)
-    
-    # bot_cell = picked_direction
+    if(directions == 'success'):
+        break   
+
+    if isinstance(directions[0], int):
+        picked_direction = directions
+    else:
+        picked_direction = random.choice(directions)
+
+    bot_cell = picked_direction
     print(f'here {picked_direction}')
-    break
+
 
 for row in grid:
     print(row)
