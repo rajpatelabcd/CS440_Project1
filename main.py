@@ -13,6 +13,8 @@ q = 0.4
 GRID_SIZE = 5
 grid = [['*' for _ in range(GRID_SIZE)] for _ in range(GRID_SIZE)]
 
+bot_cell = ()
+switch_cell = ()
 
 def get_neighbors(pos):
     x, y = pos
@@ -24,6 +26,30 @@ def get_neighbors(pos):
     if y < GRID_SIZE - 1: neighbors["right"] = (x, y + 1)
 
     return neighbors
+
+def get_direction(bot_cell, curr_cell):
+    r1, c1 = bot_cell
+    r2, c2 = curr_cell
+
+    if((r2 < r1) and (c2 < c1)):
+        return ('up', 'right')
+    if((r2 < r1) and (c2 > c1)):
+        return ('up', 'left')
+    if((r2 > r1) and (c2 < c1)):
+        return ('down', 'right')
+    if((r2 > r1) and (c2 > c1)):
+        return ('down', 'left')
+    if(r2 < r1):
+        return 'up'
+    if(r2 > r1):
+        return 'down'
+    if(c2 < c1):
+        return 'right'
+    if(c2 > c1):
+        return 'left'
+
+    if((r1 == r2) and (c1 == c2)):
+        return 'success'
 
 def setup_grid():
 
@@ -109,7 +135,6 @@ def setup_grid():
                 break;
 
 setup_grid()
-
 # listing open and closed cell 
 open_cells = [
     (r_idx, c_idx) 
@@ -136,11 +161,12 @@ switch_row, switch_column = switch_cell
 
 grid[switch_row][switch_column] = 's'
 
-for i in range(10):
+for i in range(1):
     r3 = random.randint(0, len(open_cells) - 1)
     init_fire_cell = open_cells[r3]
     init_fire_cell_row, init_fire_cell_column = init_fire_cell
 
+    # look until you don't find open cell for fire 
     while (grid[init_fire_cell_row][init_fire_cell_column] != '.'):
         r3 = random.randint(0, len(open_cells) - 1)
         init_fire_cell = open_cells[r3]
@@ -157,7 +183,7 @@ for i in range(10):
 
     flammability = random.random()
     probability = 1 - (1 - q) ** k
-    print(f'The k is {k} flammability is {flammability} prob is {probability}')
+    # print(f'The k is {k} flammability is {flammability} prob is {probability}')
     # for now this is not random  !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! [puting neighbor cell on fire]
     if (probability > flammability):
         print('yes')
@@ -166,8 +192,17 @@ for i in range(10):
             if(grid[r][c] == '.'):
                 grid[r][c] = 'p'
                 break        
-    print(f"Iteration {i}")
+    # print(f"Iteration {i}")
     time.sleep(1)
+
+# place_everything()
+print(bot_cell)
+print(switch_cell)
+while (bot_cell != switch_cell):
+    direction = get_direction(bot_cell, switch_cell)
+    print(direction)
+    break
+    # if (direction == 'left'):
 
 for row in grid:
     print(row)
