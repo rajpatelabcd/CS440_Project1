@@ -45,9 +45,12 @@ def get_direction(b_cell, s_cell):
     if(r2 > r1 and (0 <= c1 <= GRID_SIZE - 1) and (0 <= c2 <= GRID_SIZE - 1) and (0 <= r1 < GRID_SIZE - 1)  and (0 <= r2 <= GRID_SIZE - 1)):
         return (r1 + 1, c1) # down
     if(c2 < c1 and (0 <= c1 < GRID_SIZE - 1) and (0 <= c2 <= GRID_SIZE - 1) and (0 <= r1 <= GRID_SIZE - 1)  and (0 <= r2 <= GRID_SIZE - 1)):
-        return (r1, c1 + 1) # right
-    if(c2 > c1 and (0 < c1 <= GRID_SIZE - 1) and (0 <= c2 <= GRID_SIZE - 1) and (0 <= r1 <= GRID_SIZE - 1)  and (0 <= r2 <= GRID_SIZE - 1)):
         return(r1, c1 - 1) # left
+    if(c2 > c1 and (0 < c1 <= GRID_SIZE - 1) and (0 <= c2 <= GRID_SIZE - 1) and (0 <= r1 <= GRID_SIZE - 1)  and (0 <= r2 <= GRID_SIZE - 1)):
+        return (r1, c1 + 1) # right
+    return 'Raj'
+
+
 
 def setup_grid():
 
@@ -129,13 +132,13 @@ open_cells = [
     (r_idx, c_idx) 
     for r_idx, row in enumerate(grid) 
     for c_idx, val in enumerate(row) 
-    if val == '*'
+    if val == '.'
 ]
 closed_cells = [
     (r_idx, c_idx) 
     for r_idx, row in enumerate(grid) 
     for c_idx, val in enumerate(row) 
-    if val == '.'
+    if val == '*'
 ]
 
 # placing bot and switch
@@ -196,7 +199,12 @@ while (bot_cell != switch_cell):
     directions = get_direction(bot_cell, switch_cell)
 
     if (directions == 'success'):
+        print('succ')
         break   
+
+    if (directions == 'Raj'):
+        print('raj')
+        break  
 
     isOnePath = False
 
@@ -219,17 +227,18 @@ while (bot_cell != switch_cell):
         r4, c4 = picked_direction_2
 
     if(grid[r3][c3] == 's' or grid[r4][c4] == 's'):
+
         print('this is the end, hold your ...')
         break
 # if the neighbor is open we can pick it
     if (grid[r3][c3] == '.'):
         bot_cell = picked_direction
-        print(f'here {picked_direction}')
+        print(f'using this path {picked_direction}')
 
 # if the first neighbor we picked is not open we can go to other neighbor we had 2 possible paths
     elif (grid[r4][c4] == '.'):
         bot_cell = picked_direction_2
-        print(f'here {picked_direction_2}')
+        print(f'using this path {picked_direction_2}')
 
 # if we can't go to any given paths either one or both you will have to pick other possible path 
     else:
