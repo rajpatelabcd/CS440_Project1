@@ -190,7 +190,6 @@ for i in range(1):
 print(f'bot was here {bot_cell}')
 print(f'switch was here {switch_cell}')
 
-
 for row in grid:
     print(row)
 
