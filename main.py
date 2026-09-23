@@ -193,15 +193,24 @@ while (bot_cell != switch_cell):
     directions = get_direction(bot_cell, switch_cell)
     if(directions == 'success'):
         break   
+    isOnePath = False
 
-    if isinstance(directions[0], int):
+    if (isinstance(directions[0], int)):
         picked_direction = directions
+        isOnePath = True
     else:
         picked_direction = random.choice(directions)
+        isOnePath = False 
+    
+    r3, c3 = picked_direction
 
-    bot_cell = picked_direction
-    print(f'here {picked_direction}')
+    if (grid[r3][c3] == '.'):
+        bot_cell = picked_direction
+        print(f'here {picked_direction}')
+
+    elif ((!isOnePath) and ):
 
 
+    else: # there is no other path 
 for row in grid:
     print(row)
