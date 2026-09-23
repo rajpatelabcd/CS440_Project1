@@ -27,26 +27,26 @@ def get_neighbors(pos):
 
     return neighbors
 
-def get_direction(bot_cell, curr_cell):
-    r1, c1 = bot_cell
-    r2, c2 = curr_cell
+def get_direction(b_cell, s_cell):
+    r1, c1 = b_cell
+    r2, c2 = s_cell
 
     if((r2 < r1) and (c2 < c1)):
-        return ('up', 'right')
+        return ((r1 - 1, c1), (r1, c1 - 1)) # up or left 
     if((r2 < r1) and (c2 > c1)):
-        return ('up', 'left')
+        return ((r1 - 1, c1), (r1, c1 + 1)) # up or right 
     if((r2 > r1) and (c2 < c1)):
-        return ('down', 'right')
+        return ((r1 + 1, c1), (r1, c1 - 1)) # down or left
     if((r2 > r1) and (c2 > c1)):
-        return ('down', 'left')
+        return ((r1 + 1, c1), (r1, c1 + 1)) # down or right 
     if(r2 < r1):
-        return 'up'
+        return (r1 - 1, c1) # up
     if(r2 > r1):
-        return 'down'
+        return (r1 + 1, c1) # down
     if(c2 < c1):
-        return 'right'
+        return (r1, c1 + 1) # right
     if(c2 > c1):
-        return 'left'
+        return(r1, c1 - 1) # left
 
     if((r1 == r2) and (c1 == c2)):
         return 'success'
@@ -64,9 +64,6 @@ def setup_grid():
     for neighbor in get_neighbors(open_cell).values():
         valid_cells.append(neighbor)
 
-    # print('initial valid cells are: ', valid_cells)
-    # print('\n\n')
-
     # look through each valid cell and randomlly open cell 
 
     while valid_cells:
@@ -75,8 +72,6 @@ def setup_grid():
         valid_cell_to_open = valid_cells.pop(rand)
 
         valid_cell_row, valid_cell_column = valid_cell_to_open
-
-        # print('random cell we picked to open: ', valid_cell_to_open)
 
         # check whether this cell is already open
         if grid[valid_cell_row][valid_cell_column] == '.':
@@ -101,8 +96,6 @@ def setup_grid():
             r, c = n
             if grid[r][c] == '*' and n not in valid_cells:
                 valid_cells.append(n)
-    # for row in grid:
-    #     print(row)
 
     dead_ends = []
 
@@ -126,11 +119,9 @@ def setup_grid():
 
         # for now this is not random  !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
         for d in dead_end_neighbors:
-            # print(f'this is dead end {dead_ends[rand_num]}')
             l, m = dead_end_neighbors[d]
 
             if (grid[l][m] == '*'):
-                # print(f'     this one to open {dead_end_neighbors[d]}')
                 dead_end_neighbors[d] == '.';
                 break;
 
@@ -195,14 +186,15 @@ for i in range(1):
     # print(f"Iteration {i}")
     time.sleep(1)
 
-# place_everything()
-print(bot_cell)
-print(switch_cell)
+print(f'bot {bot_cell}')
+print(f'switch {switch_cell}')
 while (bot_cell != switch_cell):
-    direction = get_direction(bot_cell, switch_cell)
-    print(direction)
+    directions = get_direction(bot_cell, switch_cell)
+    picked_direction = random.choice(directions)
+    
+    # bot_cell = picked_direction
+    print(f'here {picked_direction}')
     break
-    # if (direction == 'left'):
 
 for row in grid:
     print(row)
