@@ -27,7 +27,7 @@ def get_neighbors(pos):
 
     return neighbors
 
-def get_direction(b_cell, s_cell):
+def get_direction(b_cell, s_cell): 
     r1, c1 = b_cell
     r2, c2 = s_cell
 
@@ -49,7 +49,6 @@ def get_direction(b_cell, s_cell):
         return (r1, c1 + 1) # right
     if(c2 > c1):
         return(r1, c1 - 1) # left
-
 
 def setup_grid():
 
@@ -204,13 +203,29 @@ while (bot_cell != switch_cell):
     
     r3, c3 = picked_direction
 
+# if the neighbor open we can pick it
     if (grid[r3][c3] == '.'):
         bot_cell = picked_direction
         print(f'here {picked_direction}')
 
-    elif ((!isOnePath) and ):
+# if the first neighbor we picked is not open we can go to other neighbor we had 2 possible paths
+
+    elif((!isOnePath)):
+        for path in directions:
+            if(path != picked_direction):
+                picked_direction = path
+                break
+        r4, c4 = picked_direction
+        if (grid[r3][c3] == '.'):
+
+# if we can't go to any given paths either one or both you will have to pick other possible path 
+
+    else:
+        print('You are f ed')
+
 
 
     else: # there is no other path 
+
 for row in grid:
     print(row)
