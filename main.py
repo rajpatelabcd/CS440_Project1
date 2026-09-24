@@ -268,8 +268,8 @@ for i in range(1):
 
 
 # the bot 2 is here 
-bot2(switch_cell, bot_cell)
+bot2(bot_cell, switch_cell)
 
 
-for row in grid:
-    print(row)
+# for row in grid:
+#     print(row)
