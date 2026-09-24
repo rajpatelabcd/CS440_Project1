@@ -88,7 +88,7 @@ def bot2(bot_cell, switch_cell):
 
         isOnePath = False
 
-        if (isinstance(directions[0], int)):        
+        if isinstance(directions[0], int):        
             picked_direction = directions
             isOnePath = True
         else:
@@ -115,7 +115,7 @@ def bot2(bot_cell, switch_cell):
             print(f'using this path {picked_direction}')
 
     # if the first neighbor we picked is not open we can go to other neighbor we had 2 possible paths
-        elif (grid[r4][c4] == '.' and picked_direction not in visited):
+        elif (grid[r4][c4] == '.' and picked_direction_2 not in visited):
             stack.append(bot_cell)
             bot_cell = picked_direction_2
             print(f'using this path {picked_direction_2}')
