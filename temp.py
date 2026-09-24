@@ -11,6 +11,7 @@ from collections import deque
 
 q = 0.4
 stack = deque()
+visited = set() 
 
 GRID_SIZE = 10
 
@@ -75,7 +76,7 @@ def bot2(bot_cell, switch_cell):
         print(row)
 
     while (bot_cell != switch_cell):
-
+        visited.add(bot_cell)
         directions = get_direction(bot_cell, switch_cell)
         if (directions == 'success'):
             print('succ')
@@ -108,13 +109,13 @@ def bot2(bot_cell, switch_cell):
             print('this is the end, hold your ...')
             break
     # if the neighbor is open we can pick it
-        if (grid[r3][c3] == '.'):
+        if (grid[r3][c3] == '.' and picked_direction not in visited):
             stack.append(bot_cell)
             bot_cell = picked_direction
             print(f'using this path {picked_direction}')
 
     # if the first neighbor we picked is not open we can go to other neighbor we had 2 possible paths
-        elif (grid[r4][c4] == '.'):
+        elif (grid[r4][c4] == '.' and picked_direction not in visited):
             stack.append(bot_cell)
             bot_cell = picked_direction_2
             print(f'using this path {picked_direction_2}')
