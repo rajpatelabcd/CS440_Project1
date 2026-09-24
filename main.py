@@ -30,27 +30,25 @@ def get_neighbors(pos):
 def get_direction(b_cell, s_cell): 
     r1, c1 = b_cell
     r2, c2 = s_cell
-    if((r1 == r2) and (c1 == c2)):
+    if ((r1 == r2) and (c1 == c2)):
         return 'success'
-    if((r2 < r1) and (c2 < c1) and (0 < c1 <= GRID_SIZE - 1) and (0 <= c2 <= GRID_SIZE - 1) and (0 < r1 <= GRID_SIZE - 1)  and (0 <= r2 <= GRID_SIZE - 1)):
+    if ((r2 < r1) and (c2 < c1) and (0 < c1 <= GRID_SIZE - 1) and (0 <= c2 <= GRID_SIZE - 1) and (0 < r1 <= GRID_SIZE - 1)  and (0 <= r2 <= GRID_SIZE - 1)):
         return ((r1 - 1, c1), (r1, c1 - 1)) # up or left 
-    if((r2 < r1) and (c2 > c1) and (0 <= c1 < GRID_SIZE - 1) and (0 <= c2 <= GRID_SIZE - 1) and (0 < r1 <= GRID_SIZE - 1)  and (0 <= r2 <= GRID_SIZE - 1)):
+    if ((r2 < r1) and (c2 > c1) and (0 <= c1 < GRID_SIZE - 1) and (0 <= c2 <= GRID_SIZE - 1) and (0 < r1 <= GRID_SIZE - 1)  and (0 <= r2 <= GRID_SIZE - 1)):
         return ((r1 - 1, c1), (r1, c1 + 1)) # up or right 
-    if((r2 > r1) and (c2 < c1) and (0 < c1 <= GRID_SIZE - 1) and (0 <= c2 <= GRID_SIZE - 1) and (0 <= r1 < GRID_SIZE - 1)  and (0 <= r2 <= GRID_SIZE - 1)):
+    if ((r2 > r1) and (c2 < c1) and (0 < c1 <= GRID_SIZE - 1) and (0 <= c2 <= GRID_SIZE - 1) and (0 <= r1 < GRID_SIZE - 1)  and (0 <= r2 <= GRID_SIZE - 1)):
         return ((r1 + 1, c1), (r1, c1 - 1)) # down or left
-    if((r2 > r1) and (c2 > c1) and (0 <= c1 < GRID_SIZE - 1) and (0 <= c2 <= GRID_SIZE - 1) and (0 <= r1 < GRID_SIZE - 1)  and (0 <= r2 <= GRID_SIZE - 1)):
+    if ((r2 > r1) and (c2 > c1) and (0 <= c1 < GRID_SIZE - 1) and (0 <= c2 <= GRID_SIZE - 1) and (0 <= r1 < GRID_SIZE - 1)  and (0 <= r2 <= GRID_SIZE - 1)):
         return ((r1 + 1, c1), (r1, c1 + 1)) # down or right 
-    if(r2 < r1) and (0 <= c1 <= GRID_SIZE - 1) and (0 <= c2 <= GRID_SIZE - 1) and (0 < r1 <= GRID_SIZE - 1)  and (0 <= r2 <= GRID_SIZE - 1):
+    if (r2 < r1) and (0 <= c1 <= GRID_SIZE - 1) and (0 <= c2 <= GRID_SIZE - 1) and (0 < r1 <= GRID_SIZE - 1)  and (0 <= r2 <= GRID_SIZE - 1):
         return (r1 - 1, c1) # up
-    if(r2 > r1 and (0 <= c1 <= GRID_SIZE - 1) and (0 <= c2 <= GRID_SIZE - 1) and (0 <= r1 < GRID_SIZE - 1)  and (0 <= r2 <= GRID_SIZE - 1)):
+    if (r2 > r1 and (0 <= c1 <= GRID_SIZE - 1) and (0 <= c2 <= GRID_SIZE - 1) and (0 <= r1 < GRID_SIZE - 1)  and (0 <= r2 <= GRID_SIZE - 1)):
         return (r1 + 1, c1) # down
-    if(c2 < c1 and (0 <= c1 < GRID_SIZE - 1) and (0 <= c2 <= GRID_SIZE - 1) and (0 <= r1 <= GRID_SIZE - 1)  and (0 <= r2 <= GRID_SIZE - 1)):
+    if (c2 < c1 and (0 <= c1 < GRID_SIZE - 1) and (0 <= c2 <= GRID_SIZE - 1) and (0 <= r1 <= GRID_SIZE - 1)  and (0 <= r2 <= GRID_SIZE - 1)):
         return(r1, c1 - 1) # left
-    if(c2 > c1 and (0 < c1 <= GRID_SIZE - 1) and (0 <= c2 <= GRID_SIZE - 1) and (0 <= r1 <= GRID_SIZE - 1)  and (0 <= r2 <= GRID_SIZE - 1)):
+    if (c2 > c1 and (0 < c1 <= GRID_SIZE - 1) and (0 <= c2 <= GRID_SIZE - 1) and (0 <= r1 <= GRID_SIZE - 1)  and (0 <= r2 <= GRID_SIZE - 1)):
         return (r1, c1 + 1) # right
     return 'Raj'
-
-
 
 def setup_grid():
 
@@ -126,6 +124,86 @@ def setup_grid():
                 dead_end_neighbors[d] == '.';
                 break;
 
+def bot1(bot_cell, swit_cell):
+    print('this is bot 2')
+    print(f'bot was here {bot_cell}')
+    print(f'switch was here {switch_cell}')
+
+    for row in grid:
+        print(row)
+
+    while (bot_cell != switch_cell):
+        directions = get_direction(bot_cell, switch_cell)
+        if (directions == 'success'):
+            print('succ')
+            break 
+
+        if (directions == 'Raj'):
+            print('raj')
+            break   
+
+
+def bot2(bot_cell, switch_cell):
+    
+    print('this is bot 2')
+    print(f'bot was here {bot_cell}')
+    print(f'switch was here {switch_cell}')
+
+    for row in grid:
+        print(row)
+
+    while (bot_cell != switch_cell):
+
+        directions = get_direction(bot_cell, switch_cell)
+        if (directions == 'success'):
+            print('succ')
+            break   
+
+        if (directions == 'Raj'):
+            print('raj')
+            break  
+
+        isOnePath = False
+
+        if (isinstance(directions[0], int)):        
+            picked_direction = directions
+            isOnePath = True
+        else:
+            picked_direction = random.choice(directions)
+        
+        r3, c3 = picked_direction
+
+        r4, c4 = picked_direction
+
+    # if possible also find other possible path 
+        if((isOnePath == False)):
+            for path in directions:
+                if(path != picked_direction):
+                    picked_direction_2 = path
+                    break
+            r4, c4 = picked_direction_2
+
+        if(grid[r3][c3] == 's' or grid[r4][c4] == 's'):
+
+            print('this is the end, hold your ...')
+            break
+    # if the neighbor is open we can pick it
+        if (grid[r3][c3] == '.'):
+            bot_cell = picked_direction
+            print(f'using this path {picked_direction}')
+
+    # if the first neighbor we picked is not open we can go to other neighbor we had 2 possible paths
+        elif (grid[r4][c4] == '.'):
+            bot_cell = picked_direction_2
+            print(f'using this path {picked_direction_2}')
+
+    # if we can't go to any given paths either one or both you will have to pick other possible path 
+        else:
+            print('You are f ed')
+            break
+
+# the bot one is this
+
 setup_grid()
 # listing open and closed cell 
 open_cells = [
@@ -152,6 +230,7 @@ switch_cell = open_cells[r2]
 switch_row, switch_column = switch_cell
 
 grid[switch_row][switch_column] = 's'
+
 
 for i in range(1):
     r3 = random.randint(0, len(open_cells) - 1)
@@ -187,62 +266,10 @@ for i in range(1):
     # print(f"Iteration {i}")
     time.sleep(1)
 
-print(f'bot was here {bot_cell}')
-print(f'switch was here {switch_cell}')
 
-for row in grid:
-    print(row)
+# the bot 2 is here 
+bot2(switch_cell, bot_cell)
 
-while (bot_cell != switch_cell):
-
-    directions = get_direction(bot_cell, switch_cell)
-
-    if (directions == 'success'):
-        print('succ')
-        break   
-
-    if (directions == 'Raj'):
-        print('raj')
-        break  
-
-    isOnePath = False
-
-    if (isinstance(directions[0], int)):        
-        picked_direction = directions
-        isOnePath = True
-    else:
-        picked_direction = random.choice(directions)
-    
-    r3, c3 = picked_direction
-
-    r4, c4 = picked_direction
-
-# if possible also find other possible path 
-    if((isOnePath == False)):
-        for path in directions:
-            if(path != picked_direction):
-                picked_direction_2 = path
-                break
-        r4, c4 = picked_direction_2
-
-    if(grid[r3][c3] == 's' or grid[r4][c4] == 's'):
-
-        print('this is the end, hold your ...')
-        break
-# if the neighbor is open we can pick it
-    if (grid[r3][c3] == '.'):
-        bot_cell = picked_direction
-        print(f'using this path {picked_direction}')
-
-# if the first neighbor we picked is not open we can go to other neighbor we had 2 possible paths
-    elif (grid[r4][c4] == '.'):
-        bot_cell = picked_direction_2
-        print(f'using this path {picked_direction_2}')
-
-# if we can't go to any given paths either one or both you will have to pick other possible path 
-    else:
-        print('You are f ed')
-        break
 
 for row in grid:
     print(row)
