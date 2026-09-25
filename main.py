@@ -201,71 +201,72 @@ def bot1(bot_cell, switch_cell):
 
 
 def bot2(bot_cell, switch_cell):
-    
     print('this is bot 2')
     print(f'bot was here {bot_cell}')
     print(f'switch was here {switch_cell}')
-
     for row in grid:
         print(row)
     visited = set()
     visited.add(bot_cell)
+    directions = get_direction(bot_cell, switch_cell)
 
-    while (bot_cell != switch_cell):
+    if (directions == 'success'):
+        print('succ')
+        return switch_cell
 
-        directions = get_direction(bot_cell, switch_cell)
-        if (directions == 'success'):
-            print('succ')
-            break   
+    if (directions == 'Raj'):
+        print('raj')
+        return 0 
 
-        if (directions == 'Raj'):
-            print('raj')
-            break  
+    isOnePath = False
 
-        isOnePath = False
+    if (isinstance(directions[0], int)):        
+        picked_direction = directions
+        isOnePath = True
+    else:
+        picked_direction = random.choice(directions)
+    
+    r3, c3 = picked_direction
+    r4, c4 = picked_direction
 
-        if (isinstance(directions[0], int)):        
-            picked_direction = directions
-            isOnePath = True
-        else:
-            picked_direction = random.choice(directions)
-        
-        r3, c3 = picked_direction
+        # if possible also find other possible path 
+    if((isOnePath == False)):
+        for path in directions:
+            if(path != picked_direction):
+                picked_direction_2 = path
+                break
+        r4, c4 = picked_direction_2
 
-        r4, c4 = picked_direction
+    if(grid[r3][c3] == 's' or grid[r4][c4] == 's'):
+        print('this is the end, hold your ...')
+        return switch_cell
 
-    # if possible also find other possible path 
-        if((isOnePath == False)):
-            for path in directions:
-                if(path != picked_direction):
-                    picked_direction_2 = path
-                    break
-            r4, c4 = picked_direction_2
-
-        if(grid[r3][c3] == 's' or grid[r4][c4] == 's'):
-            print('this is the end, hold your ...')
-            break
-    # if the neighbor is open we can pick it
-        if (grid[r3][c3] == '.' and (r3, c3) not in visited):
-            stack.append(bot_cell)
-            visited.add((r3, c3)) 
-            bot_cell = picked_direction
-            print(f'using this path {picked_direction}')
+        # if the neighbor is open we can pick it
+    if (grid[r3][c3] == '.' and (r3, c3) not in visited):
+        stack.append(bot_cell)
+        visited.add((r3, c3)) 
+        bot_cell = picked_direction
+        print(f'using this path {picked_direction}')
+        return bot_cell
 
     # if the first neighbor we picked is not open we can go to other neighbor we had 2 possible paths
-        elif (grid[r4][c4] == '.' and (r4, c4) not in visited):
-            stack.append(bot_cell)
-            visited.add((r3, c3)) 
-            bot_cell = picked_direction_2
-            print(f'using this path {picked_direction_2}')
+    elif (grid[r4][c4] == '.' and (r4, c4) not in visited):
+        stack.append(bot_cell)
+        visited.add((r4, c4)) 
+        bot_cell = picked_direction_2
+        print(f'using this path {picked_direction_2}')
+        return bot_cell
 
     # if we can't go to any given paths either one or both you will have to pick other possible path 
-        elif (stack):
-            previous_node = stack.pop()
-            bot_cell = previous_node
-        else:
-            print('you are f ed')
-            break
+    elif (stack):
+        previous_node = stack.pop()
+        bot_cell = previous_node
+        return 5
+    else:
+        print('you are f ed')
+        return 0;
+    return 5
+    
 
 # the bot one is this
 
@@ -319,10 +320,8 @@ for i in range(1):
         # look through every neigbor
         for n in fire_cell_neighbors.values():
             if n not in visited_neighbors:
-
                 r4, c4 = n
                 neighbors_of_cell_to_fire = get_neighbors(n)
-
                 # count how many neigbor of them are on fire 
                 k = 0
                 for l in neighbors_of_cell_to_fire.values():
@@ -345,14 +344,26 @@ for i in range(1):
     # print(f"Iteration {i}")
     time.sleep(1)
 
-
 # the bot 2 is here 
 # bot2(bot_cell, switch_cell)
 # print(stack)
 
-r = bot1(bot_cell, switch_cell)
-print(f'list of paths {r}')
-
+run = 1
+paths = []
+while(bot_cell != switch_cell):
+   bot_cell = bot2(bot_cell, switch_cell)
+   paths.append(bot_cell)
+   if(bot_cell == 0 or bot_cell == 5):
+    break
+   
 
 for row in grid:
     print(row)
+
+
+
+print('')
+print('')
+
+print(f'this is the path for first bot {paths}')
+
