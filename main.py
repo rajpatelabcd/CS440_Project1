@@ -1,5 +1,6 @@
 import random
 import time
+from collections import deque
 
 
 # * is closed
@@ -9,6 +10,7 @@ import time
 # f is fire 
 
 q = 0.4
+stack = deque()
 
 GRID_SIZE = 5
 grid = [['*' for _ in range(GRID_SIZE)] for _ in range(GRID_SIZE)]
@@ -30,27 +32,25 @@ def get_neighbors(pos):
 def get_direction(b_cell, s_cell): 
     r1, c1 = b_cell
     r2, c2 = s_cell
-    if((r1 == r2) and (c1 == c2)):
+    if ((r1 == r2) and (c1 == c2)):
         return 'success'
-    if((r2 < r1) and (c2 < c1) and (0 < c1 <= GRID_SIZE - 1) and (0 <= c2 <= GRID_SIZE - 1) and (0 < r1 <= GRID_SIZE - 1)  and (0 <= r2 <= GRID_SIZE - 1)):
+    if ((r2 < r1) and (c2 < c1) and (0 < c1 <= GRID_SIZE - 1) and (0 <= c2 <= GRID_SIZE - 1) and (0 < r1 <= GRID_SIZE - 1)  and (0 <= r2 <= GRID_SIZE - 1)):
         return ((r1 - 1, c1), (r1, c1 - 1)) # up or left 
-    if((r2 < r1) and (c2 > c1) and (0 <= c1 < GRID_SIZE - 1) and (0 <= c2 <= GRID_SIZE - 1) and (0 < r1 <= GRID_SIZE - 1)  and (0 <= r2 <= GRID_SIZE - 1)):
+    if ((r2 < r1) and (c2 > c1) and (0 <= c1 < GRID_SIZE - 1) and (0 <= c2 <= GRID_SIZE - 1) and (0 < r1 <= GRID_SIZE - 1)  and (0 <= r2 <= GRID_SIZE - 1)):
         return ((r1 - 1, c1), (r1, c1 + 1)) # up or right 
-    if((r2 > r1) and (c2 < c1) and (0 < c1 <= GRID_SIZE - 1) and (0 <= c2 <= GRID_SIZE - 1) and (0 <= r1 < GRID_SIZE - 1)  and (0 <= r2 <= GRID_SIZE - 1)):
+    if ((r2 > r1) and (c2 < c1) and (0 < c1 <= GRID_SIZE - 1) and (0 <= c2 <= GRID_SIZE - 1) and (0 <= r1 < GRID_SIZE - 1)  and (0 <= r2 <= GRID_SIZE - 1)):
         return ((r1 + 1, c1), (r1, c1 - 1)) # down or left
-    if((r2 > r1) and (c2 > c1) and (0 <= c1 < GRID_SIZE - 1) and (0 <= c2 <= GRID_SIZE - 1) and (0 <= r1 < GRID_SIZE - 1)  and (0 <= r2 <= GRID_SIZE - 1)):
+    if ((r2 > r1) and (c2 > c1) and (0 <= c1 < GRID_SIZE - 1) and (0 <= c2 <= GRID_SIZE - 1) and (0 <= r1 < GRID_SIZE - 1)  and (0 <= r2 <= GRID_SIZE - 1)):
         return ((r1 + 1, c1), (r1, c1 + 1)) # down or right 
-    if(r2 < r1) and (0 <= c1 <= GRID_SIZE - 1) and (0 <= c2 <= GRID_SIZE - 1) and (0 < r1 <= GRID_SIZE - 1)  and (0 <= r2 <= GRID_SIZE - 1):
+    if (r2 < r1) and (0 <= c1 <= GRID_SIZE - 1) and (0 <= c2 <= GRID_SIZE - 1) and (0 < r1 <= GRID_SIZE - 1)  and (0 <= r2 <= GRID_SIZE - 1):
         return (r1 - 1, c1) # up
-    if(r2 > r1 and (0 <= c1 <= GRID_SIZE - 1) and (0 <= c2 <= GRID_SIZE - 1) and (0 <= r1 < GRID_SIZE - 1)  and (0 <= r2 <= GRID_SIZE - 1)):
+    if (r2 > r1 and (0 <= c1 <= GRID_SIZE - 1) and (0 <= c2 <= GRID_SIZE - 1) and (0 <= r1 < GRID_SIZE - 1)  and (0 <= r2 <= GRID_SIZE - 1)):
         return (r1 + 1, c1) # down
-    if(c2 < c1 and (0 <= c1 < GRID_SIZE - 1) and (0 <= c2 <= GRID_SIZE - 1) and (0 <= r1 <= GRID_SIZE - 1)  and (0 <= r2 <= GRID_SIZE - 1)):
+    if (c2 < c1 and (0 <= c1 < GRID_SIZE - 1) and (0 <= c2 <= GRID_SIZE - 1) and (0 <= r1 <= GRID_SIZE - 1)  and (0 <= r2 <= GRID_SIZE - 1)):
         return(r1, c1 - 1) # left
-    if(c2 > c1 and (0 < c1 <= GRID_SIZE - 1) and (0 <= c2 <= GRID_SIZE - 1) and (0 <= r1 <= GRID_SIZE - 1)  and (0 <= r2 <= GRID_SIZE - 1)):
+    if (c2 > c1 and (0 < c1 <= GRID_SIZE - 1) and (0 <= c2 <= GRID_SIZE - 1) and (0 <= r1 <= GRID_SIZE - 1)  and (0 <= r2 <= GRID_SIZE - 1)):
         return (r1, c1 + 1) # right
     return 'Raj'
-
-
 
 def setup_grid():
 
@@ -126,6 +126,89 @@ def setup_grid():
                 dead_end_neighbors[d] == '.';
                 break;
 
+def bot1(bot_cell, swit_cell):
+    print('this is bot 2')
+    print(f'bot was here {bot_cell}')
+    print(f'switch was here {switch_cell}')
+
+    for row in grid:
+        print(row)
+
+    while (bot_cell != switch_cell):
+        directions = get_direction(bot_cell, switch_cell)
+        if (directions == 'success'):
+            print('succ')
+            break 
+
+        if (directions == 'Raj'):
+            print('raj')
+            break   
+
+def bot2(bot_cell, switch_cell):
+    
+    print('this is bot 2')
+    print(f'bot was here {bot_cell}')
+    print(f'switch was here {switch_cell}')
+
+    for row in grid:
+        print(row)
+
+    while (bot_cell != switch_cell):
+
+        directions = get_direction(bot_cell, switch_cell)
+        if (directions == 'success'):
+            print('succ')
+            break   
+
+        if (directions == 'Raj'):
+            print('raj')
+            break  
+
+        isOnePath = False
+
+        if (isinstance(directions[0], int)):        
+            picked_direction = directions
+            isOnePath = True
+        else:
+            picked_direction = random.choice(directions)
+        
+        r3, c3 = picked_direction
+        r4, c4 = picked_direction
+
+    # if possible also find other possible path 
+        if((isOnePath == False)):
+            for path in directions:
+                if(path != picked_direction):
+                    picked_direction_2 = path
+                    break
+            r4, c4 = picked_direction_2
+
+        if(grid[r3][c3] == 's' or grid[r4][c4] == 's'):
+            print('this is the end, hold your ...')
+            break
+    # if the neighbor is open we can pick it
+        if (grid[r3][c3] == '.'):
+            stack.append(bot_cell)
+            bot_cell = picked_direction
+            print(f'using this path {picked_direction}')
+
+    # if the first neighbor we picked is not open we can go to other neighbor we had 2 possible paths
+        elif (grid[r4][c4] == '.'):
+            stack.append(bot_cell)
+            bot_cell = picked_direction_2
+            print(f'using this path {picked_direction_2}')
+
+    # if we can't go to any given paths either one or both you will have to pick other possible path 
+        elif (stack):
+            print('this ran')
+            previous_node = stack.pop()
+            bot_cell = previous_node
+        else:
+            print('you are f ed')
+            break
+
+# the bot one is this
+
 setup_grid()
 # listing open and closed cell 
 open_cells = [
@@ -153,97 +236,61 @@ switch_row, switch_column = switch_cell
 
 grid[switch_row][switch_column] = 's'
 
-for i in range(1):
+r3 = random.randint(0, len(open_cells) - 1)
+init_fire_cell = open_cells[r3]
+init_fire_cell_row, init_fire_cell_column = init_fire_cell
+while (grid[init_fire_cell_row][init_fire_cell_column] != '.'):
     r3 = random.randint(0, len(open_cells) - 1)
     init_fire_cell = open_cells[r3]
     init_fire_cell_row, init_fire_cell_column = init_fire_cell
+    break;
+grid[init_fire_cell_row][init_fire_cell_column] = 'f'
+fire_cells = []
+fire_cells.append((init_fire_cell_row, init_fire_cell_column))
 
-    # look until you don't find open cell for fire 
-    while (grid[init_fire_cell_row][init_fire_cell_column] != '.'):
-        r3 = random.randint(0, len(open_cells) - 1)
-        init_fire_cell = open_cells[r3]
-        init_fire_cell_row, init_fire_cell_column = init_fire_cell
-        break;
-    grid[init_fire_cell_row][init_fire_cell_column] = 'f'
-    fire_cell_neighbor = get_neighbors(init_fire_cell)
 
-    k = 0
-    for n in fire_cell_neighbor.values():
-        r, c = n
-        if(grid[r][c] == 'f'):
-            k = k + 1 
+for i in range(5):
+    temp_fire_cells = []
+    # look for only neigbor of fire cells to see if they catch fire 
+    visited_neighbors = []
 
-    flammability = random.random()
-    probability = 1 - (1 - q) ** k
-    # print(f'The k is {k} flammability is {flammability} prob is {probability}')
+    for raj in fire_cells:
+        fire_cell_neighbors = get_neighbors(raj)
+        # look through every neigbor
+        for n in fire_cell_neighbors.values():
+
+            if n not in visited_neighbors:
+                print(f'this ran times which should be 4')
+                r4, c4 = n
+                neighbors_of_cell_to_fire = get_neighbors(n)
+
+                # count how many neigbor of them are on fire 
+                k = 0
+                for l in neighbors_of_cell_to_fire.values():
+                    r5, c5 = l
+                    if(grid[r5][c5] == 'f'):
+                        k = k + 1
+                flammability = random.random()
+                probability = 1 - (1 - q) ** k
+                if (probability > flammability):
+                    if n not in temp_fire_cells:
+                        temp_fire_cells.append(n)
+                        print(f"Fire spreaded for iteration {i}")
+                visited_neighbors.append(n)
+    for n in temp_fire_cells:
+        r5, c5 = n 
+        if(grid[r5][c5] != 'f'):
+            grid[r5][c5] = 'f'
+            fire_cells.append(n)    
     # for now this is not random  !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! [puting neighbor cell on fire]
-    if (probability > flammability):
-        print('yes')
-        for n in fire_cell_neighbor.values():
-            r, c = n 
-            if(grid[r][c] == '.'):
-                grid[r][c] = 'p'
-                break        
+    
     # print(f"Iteration {i}")
     time.sleep(1)
 
-print(f'bot was here {bot_cell}')
-print(f'switch was here {switch_cell}')
 
-
-for row in grid:
-    print(row)
-
-while (bot_cell != switch_cell):
-
-    directions = get_direction(bot_cell, switch_cell)
-
-    if (directions == 'success'):
-        print('succ')
-        break   
-
-    if (directions == 'Raj'):
-        print('raj')
-        break  
-
-    isOnePath = False
-
-    if (isinstance(directions[0], int)):        
-        picked_direction = directions
-        isOnePath = True
-    else:
-        picked_direction = random.choice(directions)
-    
-    r3, c3 = picked_direction
-
-    r4, c4 = picked_direction
-
-# if possible also find other possible path 
-    if((isOnePath == False)):
-        for path in directions:
-            if(path != picked_direction):
-                picked_direction_2 = path
-                break
-        r4, c4 = picked_direction_2
-
-    if(grid[r3][c3] == 's' or grid[r4][c4] == 's'):
-
-        print('this is the end, hold your ...')
-        break
-# if the neighbor is open we can pick it
-    if (grid[r3][c3] == '.'):
-        bot_cell = picked_direction
-        print(f'using this path {picked_direction}')
-
-# if the first neighbor we picked is not open we can go to other neighbor we had 2 possible paths
-    elif (grid[r4][c4] == '.'):
-        bot_cell = picked_direction_2
-        print(f'using this path {picked_direction_2}')
-
-# if we can't go to any given paths either one or both you will have to pick other possible path 
-    else:
-        print('You are f ed')
-        break
+# the bot 2 is here 
+# bot2(bot_cell, switch_cell)
+# print(stack)
 
 for row in grid:
     print(row)
