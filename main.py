@@ -251,14 +251,13 @@ fire_cells.append((init_fire_cell_row, init_fire_cell_column))
 
 for i in range(5):
     temp_fire_cells = []
-    # look for only neigbor of fire cells to see if they catch fire 
+    # look for only neighbor of fire cells to see if they catch fire 
     visited_neighbors = []
 
     for raj in fire_cells:
         fire_cell_neighbors = get_neighbors(raj)
         # look through every neigbor
         for n in fire_cell_neighbors.values():
-
             if n not in visited_neighbors:
                 print(f'this ran times which should be 4')
                 r4, c4 = n
