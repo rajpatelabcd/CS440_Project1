@@ -144,7 +144,7 @@ def bot(bot_cell, switch_cell, isbot3):
 
     if (directions == 'Raj'):
         print('raj')
-        return 0 
+        return -1
 
     isOnePath = False
 
@@ -194,10 +194,14 @@ def bot(bot_cell, switch_cell, isbot3):
         previous_node = stack.pop()
         bot_cell = previous_node
         return 5
-    else:
+    elif ():
         # this would be need when the first node has blocked cells in it's best path
         print('you are f ed')
         return 0;
+    else:  
+        print('you are f ed')
+        return 0;
+
     return 5
     
 
@@ -253,21 +257,42 @@ while(bot_cell_1 != switch_cell):
    paths.append(bot_cell_1)
 
    if(bot_cell_1 == 0 or bot_cell_1 == 5):
-    print('one condition with 5 ran')
+    paths.append(-1)
     break
+paths.append(switch_cell)
 
 i = -1
+bot2 = False
+bot1 = True
+
 while True:
     i = i + 1 
     temp_fire_cells = []
     visited_neighbors = []
 
-    bot_cell = bot(bot_cell, switch_cell, False)
-    print(f'bot moved to {bot_cell}')
+    # here also add check for bot having no path
+   
+    if bot2:
+        bot_cell = bot(bot_cell, switch_cell, False)
+        print(f'bot moved to {bot_cell}')
+
+    if bot1:
+        bot_cell == paths[i]
+        print(f'bot moved to {bot_cell}')
 
     if (bot_cell == switch_cell):
-        print('IT WORKED!!')
+            print('IT WORKED!!')
+            break
+    r7, c7 = bot_cell
+    if (grid[r7][c7] != '.'):
+        print('nil end khatam 1')
         break
+
+    if bot_cell == -1:
+        print('nil end khatam 2')
+        break
+
+
     # look for only neighbor of fire cells to see if they catch fire 
     for raj in fire_cells:
         fire_cell_neighbors = get_neighbors(raj)
