@@ -130,12 +130,10 @@ def setup_grid():
             if (grid[l][m] == '*'):
                 grid[l][m] = '.'
                 break;
-def bot(bot_cell, switch_cell):
+def bot(bot_cell, switch_cell, isbot3):
 
     print(f'bot was here {bot_cell}')
     print(f'switch was here {switch_cell}')
-   
-
     visited = set()
     visited.add(bot_cell)
     directions = get_direction(bot_cell, switch_cell)
@@ -197,6 +195,7 @@ def bot(bot_cell, switch_cell):
         bot_cell = previous_node
         return 5
     else:
+        # this would be need when the first node has blocked cells in it's best path
         print('you are f ed')
         return 0;
     return 5
@@ -234,6 +233,7 @@ grid[switch_row][switch_column] = 's'
 r3 = random.randint(0, len(open_cells) - 1)
 init_fire_cell = open_cells[r3]
 init_fire_cell_row, init_fire_cell_column = init_fire_cell
+
 while (grid[init_fire_cell_row][init_fire_cell_column] != '.'):
     r3 = random.randint(0, len(open_cells) - 1)
     init_fire_cell = open_cells[r3]
@@ -243,12 +243,32 @@ grid[init_fire_cell_row][init_fire_cell_column] = 'f'
 fire_cells = []
 fire_cells.append((init_fire_cell_row, init_fire_cell_column))
 
+bot_cell_1 = bot_cell
+paths = []
+isbot3 = False
 
-for i in range(1):
+# for bot 1 
+while(bot_cell_1 != switch_cell):
+   bot_cell_1 = bot(bot_cell_1, switch_cell, isbot3)
+   paths.append(bot_cell_1)
+
+   if(bot_cell_1 == 0 or bot_cell_1 == 5):
+    print('one condition with 5 ran')
+    break
+
+i = -1
+while True:
+    i = i + 1 
     temp_fire_cells = []
-    # look for only neighbor of fire cells to see if they catch fire 
     visited_neighbors = []
 
+    bot_cell = bot(bot_cell, switch_cell, False)
+    print(f'bot moved to {bot_cell}')
+
+    if (bot_cell == switch_cell):
+        print('IT WORKED!!')
+        break
+    # look for only neighbor of fire cells to see if they catch fire 
     for raj in fire_cells:
         fire_cell_neighbors = get_neighbors(raj)
         # look through every neigbor
@@ -262,12 +282,14 @@ for i in range(1):
                     r5, c5 = l
                     if(grid[r5][c5] == 'f'):
                         k = k + 1
+                
                 flammability = random.random()
                 probability = 1 - (1 - q) ** k
                 if (probability > flammability):
                     if n not in temp_fire_cells:
                         temp_fire_cells.append(n)
                 visited_neighbors.append(n)
+
     for n in temp_fire_cells:
         r5, c5 = n 
         if(grid[r5][c5] != 'f'):
@@ -276,21 +298,8 @@ for i in range(1):
 
     # for now this is not random  !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! [puting neighbor cell on fire]
     
-    # print(f"Iteration {i}")
     time.sleep(1)
 
-# the bot 2 is here 
-# bot2(bot_cell, switch_cell)
-# print(stack)
-
-run = 1
-paths = []
-while(bot_cell != switch_cell):
-   bot_cell = bot(bot_cell, switch_cell)
-   paths.append(bot_cell)
-   if(bot_cell == 0 or bot_cell == 5):
-    break
-   
 
 for row in grid:
     print(row)
