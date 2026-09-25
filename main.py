@@ -130,82 +130,12 @@ def setup_grid():
             if (grid[l][m] == '*'):
                 grid[l][m] = '.'
                 break;
+def bot(bot_cell, switch_cell):
 
-def bot1(bot_cell, switch_cell):
-
-    print('this is bot 1')
     print(f'bot was here {bot_cell}')
     print(f'switch was here {switch_cell}')
+   
 
-    for row in grid:
-        print(row)
-    paths_taken = []
-    visited = set()
-    visited.add(bot_cell)
-    while (bot_cell != switch_cell):
-
-        directions = get_direction(bot_cell, switch_cell)
-        if (directions == 'success'):
-            print('succ')
-            break   
-
-        if (directions == 'Raj'):
-            print('raj')
-            break  
-
-        isOnePath = False
-
-        if (isinstance(directions[0], int)):        
-            picked_direction = directions
-            isOnePath = True
-        else:
-            picked_direction = random.choice(directions)
-        
-        r3, c3 = picked_direction
-
-        r4, c4 = picked_direction
-
-    # if possible also find other possible path 
-        if((isOnePath == False)):
-            for path in directions:
-                if(path != picked_direction):
-                    picked_direction_2 = path
-                    break
-            r4, c4 = picked_direction_2
-
-        if(grid[r3][c3] == 's' or grid[r4][c4] == 's'):
-            print('this is the end, hold your ...')
-            break
-    # if the neighbor is open we can pick it
-        if (grid[r3][c3] == '.' and (r3, c3) not in visited):
-            paths_taken.append((r3,c3))
-            visited.add((r3, c3)) 
-            stack.append(bot_cell)
-            bot_cell = picked_direction
-
-    # if the first neighbor we picked is not open we can go to other neighbor we had 2 possible paths
-        elif (grid[r4][c4] == '.' and (r4, c4) not in visited):
-            paths_taken.append((r4,r4))
-            visited.add((r3, c3)) 
-            stack.append(bot_cell)
-            bot_cell = picked_direction_2
-
-    # if we can't go to any given paths either one or both you will have to pick other possible path 
-        elif (stack):
-            previous_node = stack.pop()
-            bot_cell = previous_node
-        else:
-            print('you are f ed')
-            break
-    return paths_taken
-
-
-def bot2(bot_cell, switch_cell):
-    print('this is bot 2')
-    print(f'bot was here {bot_cell}')
-    print(f'switch was here {switch_cell}')
-    for row in grid:
-        print(row)
     visited = set()
     visited.add(bot_cell)
     directions = get_direction(bot_cell, switch_cell)
@@ -238,7 +168,8 @@ def bot2(bot_cell, switch_cell):
         r4, c4 = picked_direction_2
 
     if(grid[r3][c3] == 's' or grid[r4][c4] == 's'):
-        print('this is the end, hold your ...')
+        print('Mission completed')
+        print()
         return switch_cell
 
         # if the neighbor is open we can pick it
@@ -247,6 +178,9 @@ def bot2(bot_cell, switch_cell):
         visited.add((r3, c3)) 
         bot_cell = picked_direction
         print(f'using this path {picked_direction}')
+        print()
+        print()
+        print()
         return bot_cell
 
     # if the first neighbor we picked is not open we can go to other neighbor we had 2 possible paths
@@ -338,7 +272,8 @@ for i in range(1):
         r5, c5 = n 
         if(grid[r5][c5] != 'f'):
             grid[r5][c5] = 'f'
-            fire_cells.append(n)    
+            fire_cells.append(n)  
+
     # for now this is not random  !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! [puting neighbor cell on fire]
     
     # print(f"Iteration {i}")
@@ -351,7 +286,7 @@ for i in range(1):
 run = 1
 paths = []
 while(bot_cell != switch_cell):
-   bot_cell = bot2(bot_cell, switch_cell)
+   bot_cell = bot(bot_cell, switch_cell)
    paths.append(bot_cell)
    if(bot_cell == 0 or bot_cell == 5):
     break
@@ -359,8 +294,6 @@ while(bot_cell != switch_cell):
 
 for row in grid:
     print(row)
-
-
 
 print('')
 print('')
