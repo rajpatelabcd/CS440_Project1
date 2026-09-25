@@ -3,6 +3,8 @@ import time
 from collections import deque
 
 
+RED = '\033[91m'
+RESET = '\033[0m'
 # * is closed
 # . is open
 # b is bot
@@ -43,6 +45,7 @@ def get_neighbors(pos):
 
     return neighbors
 
+
 def get_direction(b_cell, s_cell): 
     r1, c1 = b_cell
     r2, c2 = s_cell
@@ -66,17 +69,34 @@ def get_direction(b_cell, s_cell):
         return (r1, c1 + 1) # right
     return 'Raj'
 
+def print_colored_grid(grid, visited_set, current_bot):
+    print("\n--- Grid Update ---")
+    for r in range(GRID_SIZE):
+        row_str = []
+        for c in range(GRID_SIZE):
+            if (r, c) == current_bot:
+                row_str.append('b')
+            elif (r, c) in visited_set:
+                # Wrap the star character in ANSI codes to color it red
+                row_str.append(f"{RED}*{RESET}")
+            else:
+                row_str.append(grid[r][c])
+        print(" ".join(row_str))
+    print("-------------------")
+
+
 def bot2(bot_cell, switch_cell):
     
     print('this is bot 2')
     print(f'bot was here {bot_cell}')
     print(f'switch was here {switch_cell}')
 
-    for row in grid:
-        print(row)
-
     while (bot_cell != switch_cell):
         visited.add(bot_cell)
+
+        print_colored_grid(grid, visited, bot_cell)
+        time.sleep(0.3)
+
         directions = get_direction(bot_cell, switch_cell)
         if (directions == 'success'):
             print('succ')
@@ -95,7 +115,7 @@ def bot2(bot_cell, switch_cell):
             picked_direction = random.choice(directions)
         
         r3, c3 = picked_direction
-        r4, c4 = picked_direction
+        r4, c4 = picked_direction if isOnePath else (None, None)
 
     # if possible also find other possible path 
         if((isOnePath == False)):
@@ -105,8 +125,9 @@ def bot2(bot_cell, switch_cell):
                     break
             r4, c4 = picked_direction_2
 
-        if(grid[r3][c3] == 's' or grid[r4][c4] == 's'):
+        if(grid[r3][c3] == 's' or (not isOnePath and grid[r4][c4] == 's')):
             print('this is the end, hold your ...')
+            bot_cell = picked_direction if grid[r3][c3] == 's' else picked_direction_2
             break
     # if the neighbor is open we can pick it
         if (grid[r3][c3] == '.' and picked_direction not in visited):
@@ -115,19 +136,22 @@ def bot2(bot_cell, switch_cell):
             print(f'using this path {picked_direction}')
 
     # if the first neighbor we picked is not open we can go to other neighbor we had 2 possible paths
-        elif (grid[r4][c4] == '.' and picked_direction_2 not in visited):
+        elif (not isOnePath and grid[r4][c4] == '.' and picked_direction_2 not in visited):
             stack.append(bot_cell)
             bot_cell = picked_direction_2
             print(f'using this path {picked_direction_2}')
 
     # if we can't go to any given paths either one or both you will have to pick other possible path 
         elif (stack):
-            print('this ran')
             previous_node = stack.pop()
             bot_cell = previous_node
+            print('this ran')
+
         else:
             print('you are f ed')
             break
+    visited.add(bot_cell)
+    print_colored_grid(grid, visited, bot_cell)
 
 for r in range(GRID_SIZE):
     for c in range(GRID_SIZE):
