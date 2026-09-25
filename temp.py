@@ -3,8 +3,16 @@ import time
 from collections import deque
 
 
+
+SPEED = 0.7
+
+
+
 RED = '\033[91m'
 RESET = '\033[0m'
+GREEN = '\033[92m'
+
+backtracked = set() 
 # * is closed
 # . is open
 # b is bot
@@ -69,21 +77,21 @@ def get_direction(b_cell, s_cell):
         return (r1, c1 + 1) # right
     return 'Raj'
 
-def print_colored_grid(grid, visited_set, current_bot):
+def print_colored_grid(grid, visited_set, backtracked_set, current_bot):
     print("\n--- Grid Update ---")
     for r in range(GRID_SIZE):
         row_str = []
         for c in range(GRID_SIZE):
             if (r, c) == current_bot:
                 row_str.append('b')
+            elif (r, c) in backtracked_set:
+                row_str.append(f"{GREEN}*{RESET}")    # Green star for backtracking
             elif (r, c) in visited_set:
-                # Wrap the star character in ANSI codes to color it red
-                row_str.append(f"{RED}*{RESET}")
+                row_str.append(f"{RED}*{RESET}")     # Red star for regular visited
             else:
                 row_str.append(grid[r][c])
         print(" ".join(row_str))
     print("-------------------")
-
 
 def bot2(bot_cell, switch_cell):
     
@@ -94,8 +102,8 @@ def bot2(bot_cell, switch_cell):
     while (bot_cell != switch_cell):
         visited.add(bot_cell)
 
-        print_colored_grid(grid, visited, bot_cell)
-        time.sleep(0.3)
+        print_colored_grid(grid, visited, backtracked, bot_cell)
+        time.sleep(SPEED)
 
         directions = get_direction(bot_cell, switch_cell)
         if (directions == 'success'):
@@ -143,6 +151,7 @@ def bot2(bot_cell, switch_cell):
 
     # if we can't go to any given paths either one or both you will have to pick other possible path 
         elif (stack):
+            backtracked.add(bot_cell) 
             previous_node = stack.pop()
             bot_cell = previous_node
             print('this ran')
@@ -151,7 +160,7 @@ def bot2(bot_cell, switch_cell):
             print('you are f ed')
             break
     visited.add(bot_cell)
-    print_colored_grid(grid, visited, bot_cell)
+    print_colored_grid(grid, visited, backtracked, bot_cell)
 
 for r in range(GRID_SIZE):
     for c in range(GRID_SIZE):
