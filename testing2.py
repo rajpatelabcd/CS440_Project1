@@ -22,39 +22,19 @@ q = 0.4
 stack = deque()
 visited = set() 
 
-GRID_SIZE = 30
+GRID_SIZE = 10
 
 grid = [
-    ['.', '.', '*', '*', '.', '*', '*', '.', '.', '.', '.', '.', '.', '*', '.', '.', '.', '*', '.', '.', '.', '.', '.', '.', '.', '.', '.', '*', '.', '.'],
-    ['.', '.', '*', '.', '.', '.', '.', '.', '*', '.', '*', '.', '.', '.', '*', '.', '*', '.', '*', '.', '.', '.', '.', '.', '.', '.', '.', '.', '*', '.'],
-    ['.', '*', '.', '.', '*', '.', '*', '.', '*', '.', '.', '.', '*', '.', '*', '.', '.', '.', '*', '.', '.', '*', '.', '.', '*', '*', '.', '*', '*', '.'],
-    ['.', '.', '*', '*', '.', '.', '.', '.', '.', '*', '*', '.', '*', '.', '*', '.', '*', '.', '.', '.', '*', '.', '.', '.', '.', '*', '.', '*', '.', '.'],
-    ['*', '.', '.', '*', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.', '*', '*', '.', '.', '*', '.', '.', '*', '.', '*', '*', '.', '.', '.', '.', '*'],
-    ['.', '*', '.', '.', '.', '.', '.', '.', '*', '.', '*', '*', '.', '*', '.', '.', '*', '.', '.', '*', '.', '*', '.', '.', '.', '.', '*', '.', '*', '.'],
-    ['.', '.', '.', '*', '.', '.', '.', '*', '.', '.', '.', '*', '.', '.', '.', '*', '.', '.', '.', '*', '.', '.', 'b', '*', '*', '.', '.', '.', '.', '.'],
-    ['*', '.', '*', '*', '.', '.', '.', '.', '*', '.', '*', '*', '*', '*', '.', '.', '*', '.', '.', '.', '.', '*', '*', '.', '.', '.', '.', '.', '*', '.'],
-    ['*', '.', '*', '.', '*', '.', '*', '.', '.', '.', '.', '*', '.', '.', '.', '*', '.', '*', '.', '*', '.', '.', '.', '.', '*', '.', '*', '*', '.', '.'],
-    ['.', '.', '*', '.', '.', '*', '.', '.', '*', '.', '*', '*', '.', '*', '.', '*', '.', '*', '.', '.', '.', '*', '.', '*', '.', '.', '.', '.', '.', '*'],
-    ['.', '*', '.', '*', '.', '.', '.', '.', '*', '.', '.', '.', '*', '*', '.', '.', '.', '.', '*', '.', '*', '.', '.', '*', '.', '*', '.', '*', '.', '.'],
-    ['.', '*', '.', '*', '.', '.', '.', '.', '.', '*', '.', '*', '.', '.', '.', '.', '*', '.', '.', '.', '.', '*', '.', '.', '.', '.', '*', '.', '.', '.'],
-    ['.', '.', '.', '.', '.', '.', '.', '*', '.', '.', '.', '*', '.', '*', '.', '.', '.', '*', '.', '*', '.', '.', '.', '*', '.', '*', '.', '.', '*', '.'],
-    ['.', '*', '.', '.', '.', '.', '.', '.', '.', '.', '*', '*', '.', '*', '.', '.', '.', '.', '.', '.', '.', '.', '.', '*', '*', '.', '.', '*', '*', '.'],
-    ['.', '.', '*', '*', '.', '.', '.', '.', '.', '.', '*', '.', '.', '.', '.', '*', '*', '.', '*', '.', '*', '*', '.', '*', '.', '.', '*', '.', '.', '.'],
-    ['.', '*', '.', '.', '.', '.', '*', '.', '*', '.', '.', '.', '*', '.', 's', '.', '*', '.', '*', '.', '*', '.', '.', '.', '.', '*', '*', '.', '*', '.'],
-    ['.', '.', '*', '.', '*', '.', '.', '.', '*', '*', '.', '.', '*', '.', '*', '.', '.', '.', '.', '*', '.', '*', '.', '*', '*', '*', '.', '.', '.', '.'],
-    ['.', '*', '.', '*', '.', '.', '*', '.', '.', '.', '.', '*', '.', '.', '.', '*', '.', '*', '.', '.', '.', '.', '.', '.', '.', '.', '.', '*', '.', '*'],
-    ['.', '.', '.', '*', '.', '*', '.', '*', '.', '.', '.', '.', '.', '*', '*', '.', '.', '.', '*', '*', '.', '*', '.', '.', '*', '.', '*', '*', '.', '.'],
-    ['.', '*', '.', '.', '*', '.', '.', '.', '.', '.', '.', '*', '*', '.', '.', '.', '*', '.', '*', '.', '.', '*', '.', '.', '*', 'f', '.', '.', '.', '.'],
-    ['*', '.', '.', '*', '.', '.', '.', '.', '.', '*', '.', '.', '.', '*', '.', '*', '*', '*', '.', '.', '.', '.', '.', '.', '.', '.', '*', '*', '.', '.'],
-    ['.', '.', '*', '.', '.', '*', '.', '*', '*', '.', '.', '*', '.', '*', '.', '*', '*', '.', '.', '.', '.', '.', '*', '.', '.', '.', '.', '*', '.', '*'],
-    ['*', '.', '.', '*', '.', '*', '.', '.', '.', '*', '.', '.', '.', '.', '.', '.', '.', '.', '*', '.', '.', '*', '.', '*', '.', '.', '.', '.', '.', '.'],
-    ['.', '*', '.', '.', '.', '.', '*', '.', '*', '.', '.', '.', '.', '.', '.', '*', '*', '*', '.', '.', '.', '.', '.', '*', '.', '*', '.', '*', '*', '.'],
-    ['.', '.', '.', '*', '*', '.', '.', '.', '.', '.', '*', '*', '.', '*', '.', '.', '.', '.', '.', '*', '.', '.', '.', '*', '.', '.', '.', '.', '.', '*'],
-    ['*', '*', '*', '*', '.', '*', '*', '*', '*', '.', '.', '.', '.', '.', '.', '*', '*', '*', '.', '.', '.', '.', '.', '.', '.', '*', '.', '*', '.', '*'],
-    ['.', '.', '.', '.', '.', '.', '.', '.', '.', '.', '*', '*', '.', '.', '.', '.', '.', '.', '.', '*', '.', '.', '.', '*', '.', '*', '.', '*', '.', '.'],
-    ['.', '*', '*', '.', '*', '.', '.', '.', '.', '*', '.', '*', '.', '.', '.', '.', '*', '*', '.', '.', '.', '*', '.', '.', '.', '.', '.', '*', '.', '.'],
-    ['.', '.', '.', '.', '.', '*', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.', '.', '*', '.', '.', '.', '.', '.', '*', '.', '.', '.', '.', '.'],
-    ['.', '.', '.', '.', '*', '.', '.', '.', '.', '.', '.', '.', '*', '.', '.', '.', '*', '.', '.', '.', '*', '.', '.', '*', '*', '*', '.', '.', '*', '.']
+    ['.', '.', '.', '.', '.', '*', '.', '.', '*', '*'],
+    ['*', '.', '.', '.', '.', '.', '.', '.', '.', '*'],
+    ['.', 's', '.', '*', '*', '.', '*', '.', '.', '.'],
+    ['*', '.', '*', '.', '*', '.', '.', '.', '*', '.'],
+    ['*', '.', '*', '.', '.', '.', '*', '*', '*', '.'],
+    ['.', '.', '.', '.', '*', '.', '.', '.', '.', 'b'],
+    ['.', '.', '.', '*', '.', '.', '.', '.', '*', '.'],
+    ['.', '.', '.', '*', '*', '*', '.', '.', '*', '.'],
+    ['.', '*', '.', '.', '.', '.', '*', '*', '.', '.'],
+    ['.', '.', '.', '*', '*', '.', '.', '.', '.', '.']
 ]
 
 bot_cell = ()
@@ -90,158 +70,6 @@ def get_neighbors(pos):
 
     return neighbors
 
-def get_direction(b_cell, s_cell): 
-    r1, c1 = b_cell
-    r2, c2 = s_cell
-    if ((r1 == r2) and (c1 == c2)):
-        return 'success'
-    if ((r2 < r1) and (c2 < c1) and (0 < c1 <= GRID_SIZE - 1) and (0 <= c2 <= GRID_SIZE - 1) and (0 < r1 <= GRID_SIZE - 1)  and (0 <= r2 <= GRID_SIZE - 1)):
-        return ((r1 - 1, c1), (r1, c1 - 1)) # up or left 
-    if ((r2 < r1) and (c2 > c1) and (0 <= c1 < GRID_SIZE - 1) and (0 <= c2 <= GRID_SIZE - 1) and (0 < r1 <= GRID_SIZE - 1)  and (0 <= r2 <= GRID_SIZE - 1)):
-        return ((r1 - 1, c1), (r1, c1 + 1)) # up or right 
-    if ((r2 > r1) and (c2 < c1) and (0 < c1 <= GRID_SIZE - 1) and (0 <= c2 <= GRID_SIZE - 1) and (0 <= r1 < GRID_SIZE - 1)  and (0 <= r2 <= GRID_SIZE - 1)):
-        return ((r1 + 1, c1), (r1, c1 - 1)) # down or left
-    if ((r2 > r1) and (c2 > c1) and (0 <= c1 < GRID_SIZE - 1) and (0 <= c2 <= GRID_SIZE - 1) and (0 <= r1 < GRID_SIZE - 1)  and (0 <= r2 <= GRID_SIZE - 1)):
-        return ((r1 + 1, c1), (r1, c1 + 1)) # down or right 
-    # if (r2 < r1) and (0 <= c1 <= GRID_SIZE - 1) and (0 <= c2 <= GRID_SIZE - 1) and (0 < r1 <= GRID_SIZE - 1)  and (0 <= r2 <= GRID_SIZE - 1):
-    #     return (r1 - 1, c1) # up
-    # if (r2 > r1 and (0 <= c1 <= GRID_SIZE - 1) and (0 <= c2 <= GRID_SIZE - 1) and (0 <= r1 < GRID_SIZE - 1)  and (0 <= r2 <= GRID_SIZE - 1)):
-    #     return (r1 + 1, c1) # down
-    # if (c2 < c1 and (0 <= c1 < GRID_SIZE - 1) and (0 <= c2 <= GRID_SIZE - 1) and (0 <= r1 <= GRID_SIZE - 1)  and (0 <= r2 <= GRID_SIZE - 1)):
-    #     return(r1, c1 - 1) # left
-    # if (c2 > c1 and (0 < c1 <= GRID_SIZE - 1) and (0 <= c2 <= GRID_SIZE - 1) and (0 <= r1 <= GRID_SIZE - 1)  and (0 <= r2 <= GRID_SIZE - 1)):
-    #     return (r1, c1 + 1) # right
-    if r2 < r1: return (r1 - 1, c1)  # up
-    if r2 > r1: return (r1 + 1, c1)  # down
-    if c2 < c1: return (r1, c1 - 1)  # left
-    if c2 > c1: return (r1, c1 + 1)  # right
-
-    return 'Raj'
-
-def bot(bot_cell, switch_cell, isbot3, visited):
-
-    visited.add(bot_cell)
-
-    # print(f'bot was here {bot_cell}')
-    # print(f'switch was here {switch_cell}')
-
-    visited.add(bot_cell)
-    directions = get_direction(bot_cell, switch_cell)
-
-    if (directions == 'success'):
-        print('succ')
-        return switch_cell
-
-    if (directions == 'Raj'):
-        print('raj')
-        return -1
-
-    isOnePath = False
-
-    if (isinstance(directions[0], int)):        
-        picked_direction = directions
-        isOnePath = True
-    else:
-        direction_1 = directions[0]
-        direction_2 = directions[1]
-
-        distance_1 = abs(switch_cell[0] - direction_1[0]) + abs(switch_cell[1] - direction_1[1])
-        distance_2 = abs(switch_cell[0] - direction_2[0]) + abs(switch_cell[1] - direction_2[1])
-
-        if distance_1 < distance_2:
-            picked_direction = direction_1
-        elif distance_2 < distance_1:
-            picked_direction = direction_2
-        else:
-            picked_direction = random.choice(directions)
-    
-    r3, c3 = picked_direction
-    r4 = c4 = None
-
-    picked_direction_2 = None
-
-    # if possible also find other possible path 
-    if((isOnePath == False)):
-        for path in directions:
-            if(path != picked_direction):
-                picked_direction_2 = path
-                break
-        r4, c4 = picked_direction_2
-
-    if grid[r3][c3] == 's' or (r4 is not None and grid[r4][c4] == 's'):
-        # print('Mission completed')
-        # print()
-        return switch_cell
-
-        # if the neighbor is open we can pick it
-   
-    if (grid[r3][c3] == '.' and (r3, c3) not in visited):
-        stack.append(bot_cell)
-        visited.add((r3, c3))
-        bot_cell = picked_direction
-        # print(f'using this path {picked_direction}')
-        # print()
-        # print()
-        # print()
-        return bot_cell
-
-    elif ((r4 is not None) and (grid[r4][c4] == '.' ) and ((r4, c4) not in visited)):
-        stack.append(bot_cell)
-        visited.add((r4, c4))
-        bot_cell = picked_direction_2
-        # print(f'using this path {picked_direction_2}')
-        return bot_cell
-    
-    # if the first neighbor we picked is not open we can go to other neighbor we had 2 possible bot1_paths
-    elif (r4 is not None and c4 is not None and grid[r4][c4] == '.' and (r4, c4) not in visited):
-        stack.append(bot_cell)
-        visited.add((r4, c4)) 
-        bot_cell = picked_direction_2
-        # print(f'using this path {picked_direction_2}')
-        return bot_cell
-
-    # if we can't go to any given bot1_paths either one or both you will have to pick other possible path 
-
-
-    # look for any other open cell 
-    else: 
-        ne = get_neighbors(bot_cell)
-        for n in ne.values():   
-            rr, cc = n
-            if(grid[rr][cc] == '.' and n not in visited):
-                stack.append(bot_cell)
-                visited.add((rr, cc))
-                bot_cell = n
-                # print(f'using this path {n}')
-                return bot_cell
-
-    if stack:
-        previous_node = stack.pop()
-        backtracked.add(bot_cell)
-        visited.add(bot_cell)
-        bot_cell = previous_node
-        return bot_cell
-
-
-
-
-    # No unvisited neighbors -> backtrack
-    # if stack:
-    #     previous_node = stack.pop()
-    #     backtracked.add(bot_cell)
-    #     return previous_node
-
-    # Nothing left to explore
-    return -1
-
-
-    # fix this 
-
-    # elif ():
-    #     # this would be need when the first node has blocked cells in it's best path
-    #     print('you are f ed')
-    #     return 5
-
 # listing open and closed cell 
 open_cells = [
     (r_idx, c_idx) 
@@ -268,7 +96,8 @@ for n in range(GRID_SIZE):
 
 
 fringe = []
-def find_best_path(b_cell, s_cell):
+
+def find_best_path(b_cell, s_cell, isbot3):
     visited = []
     fringe = []
     r1, c1 = b_cell
@@ -295,10 +124,8 @@ def find_best_path(b_cell, s_cell):
 
 
 print(f'{bot_cell}, {switch_cell}')
-ans = find_best_path(bot_cell, switch_cell)
+ans = find_best_path(bot_cell, switch_cell, False)
 print(ans)
-
-
 
 # placing bot and switch
 # r1 = random.randint(0, len(open_cells) - 1)
@@ -327,7 +154,6 @@ open_cells = [
     if val == '.'
 ]
 
-
 r3 = random.randint(0, len(open_cells) - 1)
 init_fire_cell = open_cells[r3]
 init_fire_cell_row, init_fire_cell_column = init_fire_cell
@@ -342,93 +168,92 @@ grid[init_fire_cell_row][init_fire_cell_column] = 'f'
 fire_cells = []
 fire_cells.append((init_fire_cell_row, init_fire_cell_column))
 
-bot_cell_1 = bot_cell
-bot1_paths = [bot_cell]
-isbot3 = False
-
 # for bot 1 
 
-while(bot_cell_1 != switch_cell):
+init_path = find_best_path(bot_cell, switch_cell, False)
+current_path = init_path
 
-    bot_cell_1 = bot(bot_cell_1, switch_cell, isbot3, visited)
-    if bot_cell_1 == switch_cell:
-        bot1_paths.append(bot_cell_1)
-        break 
-    bot1_paths.append(bot_cell_1)
+i = 0
 
-    if bot_cell_1 == -1 or bot_cell_1 == 2 or bot_cell_1 == 5:
-        break
-
-    if(bot_cell_1 == 0 or bot_cell_1 == 5):
-        bot1_paths.append(-1)
-        break
-
-
-i = -1
-bot2 = True
+bot2 = False
 bot1 = False
+bot3 = False
 
 while True:
-    
-    if (i > len(bot1_paths) - 1):
-        # print('the first check')
+    bot_number = input("WHich bot you would like to run: ")
+    if(bot_number == "1"):
+        bot1 = True
+        break
+    elif(bot_number == "2"):
+        bot2 = True
+        break
+    elif(bot_number == "3"):
+        bot3 = True
+        break
+    else:
+        print("Enter Valid numer")
+
+
+for f in range(GRID_SIZE):
+    print(grid[f])
+
+while True:
+    if (i > len(init_path) - 1):
+        print('the first check')
         break 
     
     if bot_cell == -1:
-        # print('something when wrong from bot')
-        break
-    if bot_cell == 5:
-        # print('something weird happened')
-        break
-    if bot_cell == 2:
-        # print('IT WORKED!!')
+        print('something when wrong from bot')
         break
     
-    temp_fire_cells = []
-    visited_neighbors = []
-
     # here also add check for bot having no path
+
+    if bot3:
+        current_path = find_best_path(bot_cell, switch_cell, True)
+        bot_cell = current_path[1]
+
+        if bot_cell == -1:
+            print("BOT LOST")
+            break
    
     if bot2:
-        bot_cell = bot(bot_cell, switch_cell, False, visited)
+        current_path = find_best_path(bot_cell, switch_cell, False)
+        bot_cell = current_path[1]
+
         if bot_cell == -1:
-            # print("BOT LOST")
+            print("BOT LOST")
             break
-
-        if bot_cell == 2:
-            # print("IT WORKED!!")
-            break
-
-        if bot_cell == 5:
-            # print("BOT BACKTRACKED")
-            continue
-        # print(f'bot moved to {bot_cell}')
 
     if bot1:
-        if i >= len(bot1_paths):
+        if i >= len(init_path):
             break
-        i = i + 1 
-        bot_cell = bot1_paths[i]
-        # print(f'bot moved to {bot_cell}')
+        i = i + 1
+        bot_cell = init_path[i]
+        print(f'bot moved to {bot_cell}')
+
 
     if (bot_cell == switch_cell):
-        # print('IT WORKED!!')
+        print('IT WORKED!!')
         break
     
     r7, c7 = bot_cell
+    print(f'the bot wr got is {bot_cell} the value is {grid[r7][c7]}')
 
     if (grid[r7][c7] == 's'):
-        # print('It worked')
+        print('It worked')
         break
 
     if grid[r7][c7] == 'f':
-        # print("BOT CAUGHT FIRE!")
+        print("BOT CAUGHT FIRE!")
         break
 
     if grid[r7][c7] != '.':
-        # print("The given cell is not open")
+        print("The given cell is not open")
         break
 
+
+    temp_fire_cells = []
+    visited_neighbors = []
 
     # look for only neighbor of fire cells to see if they catch fire 
     for raj in fire_cells:
@@ -459,20 +284,7 @@ while True:
         if grid[r5][c5] not in ('f', 'b', 's'):
             grid[r5][c5] = 'f'
             fire_cells.append(n)  
-
-    # for now this is not random  !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! [puting neighbor cell on fire]
     
-    # print_colored_grid(grid, visited, backtracked, bot_cell)
+    print_colored_grid(grid, visited, backtracked, bot_cell)
 
-    # time.sleep(SPEED)
-
-
-# for row in grid:
-#     print(row)
-
-# print('')
-# print('')
-
-# print(f'this is the path for first bot {bot1_paths}')
-
-  
+    time.sleep(SPEED)
