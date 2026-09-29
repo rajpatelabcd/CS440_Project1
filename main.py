@@ -12,7 +12,7 @@ from collections import deque
 q = 0.4
 stack = deque()
 
-GRID_SIZE = 10
+GRID_SIZE = 30
 grid = [['*' for _ in range(GRID_SIZE)] for _ in range(GRID_SIZE)]
 
 bot_cell = ()
@@ -130,6 +130,7 @@ def setup_grid():
             if (grid[l][m] == '*'):
                 grid[l][m] = '.'
                 break;
+
 def bot(bot_cell, switch_cell, isbot3):
 
     print(f'bot was here {bot_cell}')
