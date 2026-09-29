@@ -27,12 +27,12 @@ GRID_SIZE = 10
 grid = [
     ['.', '.', '.', '.', '.', '*', '.', '.', '*', '*'],
     ['*', '.', '.', '.', '.', '.', '.', '.', '.', '*'],
-    ['.', 's', '.', '*', '*', '.', '*', '.', '.', '.'],
+    ['.', '.', '.', '*', '*', '.', '*', '.', '.', '.'],
     ['*', '.', '*', '.', '*', '.', '.', '.', '*', '.'],
     ['*', '.', '*', '.', '.', '.', '*', '*', '*', '.'],
     ['.', '.', '.', '.', '*', '.', '.', '.', '.', 'b'],
     ['.', '.', '.', '*', '.', '.', '.', '.', '*', '.'],
-    ['.', '.', '.', '*', '*', '*', '.', '.', '*', '.'],
+    ['.', 's', '.', '*', '*', '*', '.', '.', '*', '.'],
     ['.', '*', '.', '.', '.', '.', '*', '*', '.', '.'],
     ['.', '.', '.', '*', '*', '.', '.', '.', '.', '.']
 ]
@@ -62,7 +62,6 @@ def print_colored_grid(grid, visited_set, backtracked_set, current_bot):
 def get_neighbors(pos):
     x, y = pos
     neighbors = {}
-
     if x > 0: neighbors["top"] = (x - 1, y)
     if x < GRID_SIZE - 1: neighbors["bottom"] = (x + 1, y)
     if y > 0: neighbors["left"] = (x, y - 1)
@@ -112,9 +111,27 @@ def find_best_path(b_cell, s_cell, isbot3):
             return current_path
         # print(f'we lookin for neighbor of {f}')
         all_neighbors = get_neighbors(f)
+
         for neighbor in all_neighbors.values():
             r3, c3 = neighbor
-            if(grid[r3][c3] == '.' or grid[r3][c3] == 's'):
+
+            if(isbot3 == True):
+                if(grid[r3][c3] == '.' or grid[r3][c3] == 's'):
+                    if neighbor not in visited:
+                        neighbor_of_neighbor = get_neighbors(neighbor)
+                        is_cell_safe = True
+                        for n in neighbor_of_neighbor.values():
+                            r4, c4 = n 
+                            if(grid[r4][c4] == 'f'):
+                                is_cell_safe = False
+                                break
+
+                        if is_cell_safe:
+                            new_path = current_path + [neighbor]
+                            fringe.append((neighbor, new_path))
+                            visited.append(neighbor)
+
+            elif(grid[r3][c3] == '.' or grid[r3][c3] == 's'):
                 if neighbor not in visited:
                     new_path = current_path + [neighbor]
                     fringe.append((neighbor, new_path))
@@ -210,6 +227,8 @@ while True:
 
     if bot3:
         current_path = find_best_path(bot_cell, switch_cell, True)
+        if current_path is None:
+            path = find_best_path(bot_cell, switch_cell, False)
         bot_cell = current_path[1]
 
         if bot_cell == -1:

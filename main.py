@@ -12,7 +12,7 @@ from collections import deque
 q = 0.4
 stack = deque()
 
-GRID_SIZE = 5
+GRID_SIZE = 10
 grid = [['*' for _ in range(GRID_SIZE)] for _ in range(GRID_SIZE)]
 
 bot_cell = ()
