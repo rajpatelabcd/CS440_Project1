@@ -273,24 +273,31 @@ def find_best_path(b_cell, s_cell):
     fringe = []
     r1, c1 = b_cell
     r2, c2 = s_cell
-    fringe.append(b_cell)
-    # look thorugh all the levels (level 0 = bot, level 1 = all cells 1 step away from bot) 
+    fringe.append((b_cell, [b_cell]))
+    visited.append(b_cell) 
+
     while fringe:
-        f = fringe[0]
+        f, current_path = fringe.pop(0)
+
         if (f == s_cell):
-            return 1
+            return current_path
+        # print(f'we lookin for neighbor of {f}')
         all_neighbors = get_neighbors(f)
-        temp = fringe.pop(0)
-        visited.append(temp)
         for neighbor in all_neighbors.values():
             r3, c3 = neighbor
-            if(grid[r3][c3] == '.'):
-                if (r3, c3) not in visited:
-                    fringe.append(neighbor)
+            if(grid[r3][c3] == '.' or grid[r3][c3] == 's'):
+                if neighbor not in visited:
+                    new_path = current_path + [neighbor]
+                    fringe.append((neighbor, new_path))
+                    visited.append(neighbor)
+            
+    return None 
 
 
-print(find_best_path(bot_cell, switch_cell))
-print(fringe)
+print(f'{bot_cell}, {switch_cell}')
+ans = find_best_path(bot_cell, switch_cell)
+print(ans)
+
 
 
 # placing bot and switch
