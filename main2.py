@@ -2,10 +2,14 @@ import random
 import time
 from collections import deque
 import matplotlib.pyplot as plt
+import copy
+import time
 
-# import matplotlib.pyplot as plt
+start_time = time.perf_counter()
 
-SPEED = 1
+
+
+
 
 
 RED = '\033[91m'
@@ -45,6 +49,7 @@ def setup_grid():
     # list of all cells which are valid and we can open (with exectly one neighbor)
 
     valid_cells = []
+    valid_cells_set = set()
     for neighbor in get_neighbors(open_cell).values():
         valid_cells.append(neighbor)
 
@@ -78,8 +83,9 @@ def setup_grid():
         # add blocked neighbors as possible candidates
         for n in neighbors.values():
             r, c = n
-            if grid[r][c] == '*' and n not in valid_cells:
+            if grid[r][c] == '*' and n not in valid_cells_set: 
                 valid_cells.append(n)
+                valid_cells_set.add(n)
 
     dead_ends = []
 
@@ -140,19 +146,19 @@ def get_neighbors(pos):
 # listing open and closed cell 
 setup_grid()
 
-fringe = []
+fringe = deque()
 
 def find_best_path(b_cell, s_cell, isbot3):
     global visited
     visited = set()
-    fringe = []
+    fringe = deque()
     r1, c1 = b_cell
     r2, c2 = s_cell
     fringe.append((b_cell, [b_cell]))
     visited.add(b_cell) 
 
     while fringe:
-        f, current_path = fringe.pop(0)
+        f, current_path = fringe.popleft()
 
         if (f == s_cell):
             return current_path
@@ -187,14 +193,15 @@ def find_best_path(b_cell, s_cell, isbot3):
     return None 
 
 def run_bot(bot_number, q, bot_cell, switch_cell ):
-    isbot3 = False 
+
+    isbot3 = False
+    
     if(bot_number == 3):
         isbot3 = True
 
     # for bot 1 
     init_path = find_best_path(bot_cell, switch_cell, False)
     if init_path is None:
-        # print("No path exists from bot to switch.")
         return 0
 
     current_path = init_path
@@ -204,6 +211,7 @@ def run_bot(bot_number, q, bot_cell, switch_cell ):
     #     print(grid[f])
 
     while True:
+
         if (i > len(init_path) - 1):
             # print('the first check')
             return 0 
@@ -214,7 +222,7 @@ def run_bot(bot_number, q, bot_cell, switch_cell ):
         
         # here also add check for bot having no path
 
-        if bot3:
+        if bot_number == 3:
             current_path = find_best_path(bot_cell, switch_cell, True)
             if current_path is None:
                 current_path = find_best_path(bot_cell, switch_cell, False)
@@ -227,18 +235,22 @@ def run_bot(bot_number, q, bot_cell, switch_cell ):
             if bot_cell == -1:
                 # print("BOT LOST")
                 return 0
-        if bot2:
+        elif bot_number == 2:
             current_path = find_best_path(bot_cell, switch_cell, False)
             if current_path is None:
                 return 0
             bot_cell = current_path[1]
 
-        if bot1:
+        elif bot_number == 1:
+            i += 1
+
             if i >= len(init_path):
                 return 0
-            i = i + 1
+
             bot_cell = init_path[i]
-            # print(f'bot moved to {bot_cell}')
+
+            if bot_cell == switch_cell:
+                return 1
 
 
         if (bot_cell == switch_cell):
@@ -263,7 +275,7 @@ def run_bot(bot_number, q, bot_cell, switch_cell ):
 
 
         temp_fire_cells = []
-        visited_neighbors = []
+        visited_neighbors = set()
 
         # look for only neighbor of fire cells to see if they catch fire 
         for raj in fire_cells:
@@ -287,12 +299,14 @@ def run_bot(bot_number, q, bot_cell, switch_cell ):
                         if grid[r][c] == '.':
                             if n not in temp_fire_cells:
                                 temp_fire_cells.append(n)
-                    visited_neighbors.append(n)
+                    visited_neighbors.add(n)
 
         for n in temp_fire_cells:
             r5, c5 = n 
             if grid[r5][c5] not in ('f', 'b', 's'):
                 grid[r5][c5] = 'f'
+                if bot_cell in fire_cells:
+                    return 0
                 fire_cells.append(n)  
         
         # print_colored_grid(grid, visited, backtracked, bot_cell)
@@ -376,35 +390,44 @@ bot3 = False
 bot1_results = {}
 bot2_results = {}
 bot3_results = {}
-for bot_number in range (1,4):
-    if(bot_number == 3):
-        bot3 = True
-        bot1 = False
-        bot2 = False
-    if(bot_number == 1):
-        bot1 = True
-        bot2 = False
-        bot3 = False
-    if(bot_number == 2):
-        bot2 = True
-        bot1 = False
-        bot3 = False
-    q_values = [x / 10 for x in range(11)]
-    raj = {}
-    for q in q_values:
-        success_count = 0
-        for r in range(100):
-            reset_grid()
-            setup_grid()
-            setup_simulation()
-            res = run_bot(int(bot_number), q, bot_cell, switch_cell)
-            success_count += res
-        if bot_number == 1: 
-            bot1_results[q] = success_count
-        elif bot_number == 2: 
-            bot2_results[q] = success_count
-        elif bot_number == 3: 
-            bot3_results[q] = success_count
+
+
+q_values = [x / 10 for x in range(11)]
+
+
+for q in q_values:
+    success_count1 = 0
+    success_count2 = 0
+    success_count3 = 0
+
+
+    for r in range(100):
+        reset_grid()
+        setup_grid()
+        setup_simulation()
+
+        original_grid = copy.deepcopy(grid)
+        original_fire = fire_cells.copy()
+        
+        grid = [row[:] for row in original_grid]
+        fire_cells = original_fire.copy()
+        res1 = run_bot(1, q, bot_cell, switch_cell)
+
+        grid = [row[:] for row in original_grid]
+        fire_cells = original_fire.copy()
+        res2 = run_bot(2, q, bot_cell, switch_cell)
+
+        grid = [row[:] for row in original_grid]
+        fire_cells = original_fire.copy()
+        res3 = run_bot(3, q, bot_cell, switch_cell)
+        
+        success_count1 += res1
+        success_count2 += res2
+        success_count3 += res3
+    
+    bot1_results[q] = success_count1   
+    bot2_results[q] = success_count2
+    bot3_results[q] = success_count3
 
 print(f'the result for bot 1')
 print(bot1_results)
@@ -419,6 +442,12 @@ plt.plot(bot1_results.keys(), bot1_results.values(), marker='o', label='Bot 1')
 plt.plot(bot2_results.keys(), bot2_results.values(), marker='o', label='Bot 2')
 plt.plot(bot3_results.keys(), bot3_results.values(), marker='o', label='Bot 3')
 
+end_time = time.perf_counter()
+
+# Calculate elapsed time in seconds
+elapsed_time = end_time - start_time
+print(f"Elapsed time: {elapsed_time:.6f} seconds")
+
 plt.xlabel("Flammability (q)")
 plt.ylabel("Success Rate")
 plt.title("Bot Success Rate vs Flammability")
@@ -429,3 +458,5 @@ plt.grid()
 plt.show()
 plt.pause(3)
 plt.close()
+
+
