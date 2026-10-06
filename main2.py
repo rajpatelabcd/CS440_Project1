@@ -7,11 +7,6 @@ import time
 
 start_time = time.perf_counter()
 
-
-
-
-
-
 RED = '\033[91m'
 RESET = '\033[0m'
 GREEN = '\033[92m'
@@ -28,7 +23,7 @@ backtracked = set()
 stack = deque()
 visited = set() 
 
-GRID_SIZE = 30
+GRID_SIZE = 10
 
 grid = [['*' for _ in range(GRID_SIZE)] for _ in range(GRID_SIZE)]
 
@@ -148,7 +143,7 @@ setup_grid()
 
 fringe = deque()
 
-def find_best_path(b_cell, s_cell, isbot3):
+def find_best_path(b_cell, s_cell, isbot3, ):
     global visited
     visited = set()
     fringe = deque()
@@ -192,7 +187,7 @@ def find_best_path(b_cell, s_cell, isbot3):
             
     return None 
 
-def run_bot(bot_number, q, bot_cell, switch_cell ):
+def run_bot(bot_number, q, bot_cell, switch_cell):
 
     isbot3 = False
     
@@ -315,7 +310,6 @@ def run_bot(bot_number, q, bot_cell, switch_cell ):
 
 # placing bot and switch
 
-
 def setup_simulation():
     global bot_cell, switch_cell, fire_cells
 
@@ -364,23 +358,7 @@ def setup_simulation():
     fire_cells = []
     fire_cells.append((init_fire_cell_row, init_fire_cell_column))
 
-# bot2 = False
-# bot1 = False
-# bot3 = False
 
-# while True:
-#     bot_number = input("WHich bot you would like to run: ")
-#     if(bot_number == "1"):
-#         bot1 = True
-#         break
-#     elif(bot_number == "2"):
-#         bot2 = True
-#         break
-#     elif(bot_number == "3"):
-#         bot3 = True
-#         break
-#     else:
-#         print("Enter Valid numer")
 
 
 bot1 = False
@@ -396,10 +374,10 @@ q_values = [x / 10 for x in range(11)]
 
 
 for q in q_values:
+
     success_count1 = 0
     success_count2 = 0
     success_count3 = 0
-
 
     for r in range(100):
         reset_grid()
@@ -458,5 +436,4 @@ plt.grid()
 plt.show()
 plt.pause(3)
 plt.close()
-
 
