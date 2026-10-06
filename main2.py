@@ -25,7 +25,7 @@ backtracked = set()
 stack = deque()
 visited = set() 
 
-GRID_SIZE = 15
+GRID_SIZE = 30
 
 grid = [['*' for _ in range(GRID_SIZE)] for _ in range(GRID_SIZE)]
 
@@ -35,6 +35,22 @@ switch_cell = ()
 def reset_grid():
     global grid
     grid = [['*' for _ in range(GRID_SIZE)] for _ in range(GRID_SIZE)]
+
+
+def update_dead_ends(dead_ends):
+    #  find valid dead ends and add to list 
+    for grid_row, row in enumerate(grid):
+        for grid_column, val in enumerate(row):           
+            r = (grid_row, grid_column)
+            neighbors2 = get_neighbors(r)
+            opened_neighbors = sum(
+                1
+                for r, c in neighbors2.values()
+                if grid[r][c] == '.'
+            )
+            if (opened_neighbors == 1) and (grid[grid_row][grid_column] == '.'):
+                dead_ends.append((grid_row, grid_column))
+
 
 def setup_grid():
 
@@ -85,22 +101,10 @@ def setup_grid():
                 valid_cells_set.add(n)
 
     dead_ends = []
-
-    #  find valid dead ends and add to list 
-    for grid_row, row in enumerate(grid):
-        for grid_column, val in enumerate(row):           
-            r = (grid_row, grid_column)
-            neighbors2 = get_neighbors(r)
-            opened_neighbors = sum(
-                1
-                for r, c in neighbors2.values()
-                if grid[r][c] == '.'
-            )
-            if (opened_neighbors == 1) and (grid[grid_row][grid_column] == '.'):
-                dead_ends.append((grid_row, grid_column))
-
+    update_dead_ends(dead_ends)
     # for random dead ends open one of the neighbor cell until half list is done
     for i in range (len(dead_ends) // 2):
+        update_dead_ends(dead_ends)
         rand_num = random.randint(0, len(dead_ends) - 1)
         dead_end_neighbors = get_neighbors(dead_ends[rand_num])
 
@@ -304,7 +308,11 @@ def run_bot(bot_number, q, bot_cell, switch_cell):
                 grid[r5][c5] = 'f'
                 if bot_cell in fire_cells:
                     return 0
-                fire_cells.append(n)  
+                fire_cells.append(n)
+                
+        if grid[r7][c7] == 'f':
+            # print("BOT CAUGHT FIRE!")
+            return 0
         
         # print_colored_grid(grid, visited, backtracked, bot_cell)
 
@@ -348,7 +356,7 @@ def calculate_cell_cost(cell, q):
     distance_risk = 1 / (d + 1)
 
     # Weights
-    risk_weight = 50
+    risk_weight = 15
     distance_weight = 5
 
     cost = (
@@ -586,7 +594,7 @@ def setup_simulation():
         r3 = random.randint(0, len(open_cells) - 1)
         init_fire_cell = open_cells[r3]
         init_fire_cell_row, init_fire_cell_column = init_fire_cell
-        break
+
 
     grid[init_fire_cell_row][init_fire_cell_column] = 'f'
     fire_cells = []
