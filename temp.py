@@ -50,7 +50,6 @@ def update_dead_ends(dead_ends):
             if (opened_neighbors == 1) and (grid[grid_row][grid_column] == '.'):
                 dead_ends.append((grid_row, grid_column))
 
-
 def setup_grid():
 
     # the first cell to open
@@ -101,19 +100,39 @@ def setup_grid():
 
     dead_ends = []
     update_dead_ends(dead_ends)
-    # for random dead ends open one of the neighbor cell until half list is done
-    for i in range (len(dead_ends) // 2):
-        update_dead_ends(dead_ends)
-        rand_num = random.randint(0, len(dead_ends) - 1)
-        dead_end_neighbors = get_neighbors(dead_ends[rand_num])
+    dead_ends = set(dead_ends)
 
-        # for now this is not random  !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-        for d in dead_end_neighbors:
-            l, m = dead_end_neighbors[d]
+    target = len(dead_ends) // 2
 
-            if (grid[l][m] == '*'):
-                grid[l][m] = '.'
-                break
+    while len(dead_ends) > target:
+        cell = random.choice(tuple(dead_ends))
+
+        closed_neighbors = [
+            n for n in get_neighbors(cell).values()
+            if grid[n[0]][n[1]] == '*'
+        ]
+
+        opened = random.choice(closed_neighbors)
+        r, c = opened
+        grid[r][c] = '.'
+
+        # Only these cells can have changed dead-end status.
+        affected = [opened, *get_neighbors(opened).values()]
+
+        for position in affected:
+            r, c = position
+            dead_ends.discard(position)
+
+            if grid[r][c] != '.':
+                continue
+
+            open_count = sum(
+                grid[nr][nc] == '.'
+                for nr, nc in get_neighbors(position).values()
+            )
+
+            if open_count == 1:
+                dead_ends.add(position)
 
 def print_colored_grid(grid, visited_set, backtracked_set, current_bot):
     print("\n--- Grid Update ---")
@@ -132,6 +151,7 @@ def print_colored_grid(grid, visited_set, backtracked_set, current_bot):
                 row_str.append(grid[r][c])
         print(" ".join(row_str))
     print("-------------------")
+
 
 def get_neighbors(pos):
     x, y = pos
@@ -283,6 +303,10 @@ def run_bot(bot_number, q, bot_cell, switch_cell):
             # look through every neigbor
             for n in fire_cell_neighbors.values():
                 if n not in visited_neighbors:
+                    visited_neighbors.add(n)
+                    r4, c4 = n
+                    if grid[r4][c4] != '.':
+                        continue
                     r4, c4 = n
                     neighbors_of_cell_to_fire = get_neighbors(n)
                     # count how many neigbor of them are on fire 
@@ -317,7 +341,6 @@ def run_bot(bot_number, q, bot_cell, switch_cell):
 
         # time.sleep(SPEED)
 
-
 def calculate_fire_risk(cell, q):
 
     neighbors = get_neighbors(cell)
@@ -334,7 +357,75 @@ def calculate_fire_risk(cell, q):
 
     return probability
 
-def calculate_cell_cost(cell, q):
+def calculate_fire_distances():
+    distances = {}
+
+    queue = deque()
+
+    for fire in fire_cells:
+        distances[fire] = 0
+        queue.append(fire)
+
+    while queue:
+        cell = queue.popleft()
+
+        for neighbor in get_neighbors(cell).values():
+            if neighbor not in distances:
+                distances[neighbor] = distances[cell] + 1
+                queue.append(neighbor)
+
+    return distances
+
+def find_best_path_bot4(bot_cell, switch_cell, q):
+
+    priority_queue = []
+
+    fire_distances = calculate_fire_distances()
+
+    heapq.heappush(
+        priority_queue,
+        (0, bot_cell, [bot_cell])
+    )
+
+    visited_cost = {}
+
+    while priority_queue:
+
+        total_cost, current, path = heapq.heappop(priority_queue)
+
+        if current == switch_cell:
+            return path
+
+        if current in visited_cost and total_cost >= visited_cost[current]:
+            continue
+
+        visited_cost[current] = total_cost
+
+        for neighbor in get_neighbors(current).values():
+
+            r, c = neighbor
+
+            if grid[r][c] != '.' and neighbor != switch_cell:
+                continue
+
+            cell_cost = calculate_cell_cost(
+                neighbor,
+                q,
+                fire_distances
+            )
+
+            new_cost = total_cost + cell_cost
+
+            new_path = path + [neighbor]
+
+            heapq.heappush(
+                priority_queue,
+                (new_cost, neighbor, new_path)
+            )
+
+    return None
+
+def calculate_cell_cost(cell, q, fire_distances):
 
     # Normal movement cost
     distance_cost = 1
@@ -343,88 +434,12 @@ def calculate_cell_cost(cell, q):
     fire_risk = calculate_fire_risk(cell, q)
 
     # Distance from nearest fire
-    if not fire_cells:
-        d = GRID_SIZE * 2
+    d = fire_distances.get(cell, GRID_SIZE * 2)
 
-    r, c = cell
-    distances = []
-    
-    for fr, fc in fire_cells:
-        distance = abs(r - fr) + abs(c - fc)
-        distances.append(distance)
+    # Stronger penalty for being close to fire
+    fire_distance_penalty = 5 / (d + 1)
 
-    d = min(distances)
-
-    # Avoid cells close to fire
-    distance_risk = 1 / (d + 1)
-
-    # Weights
-    risk_weight = 15
-    distance_weight = 5
-
-    cost = (
-        distance_cost
-        + risk_weight * fire_risk
-        + distance_weight * distance_risk
-    )
-
-    return cost
-
-def find_best_path_bot4(bot_cell, switch_cell, q):
-
-    priority_queue = []
-
-    heapq.heappush(
-        priority_queue,
-        (0, bot_cell, [bot_cell])
-    )
-
-    visited_cost = {
-        bot_cell: 0
-    }
-
-    while priority_queue:
-
-        total_cost, current, path = heapq.heappop(
-            priority_queue
-        )
-
-        if current == switch_cell:
-            return path
-
-        for neighbor in get_neighbors(current).values():
-
-            r, c = neighbor
-
-            if grid[r][c] not in ('.', 's', 'b'):
-                continue
-
-            cell_cost = calculate_cell_cost(
-                neighbor,
-                q
-            )
-
-            new_cost = total_cost + cell_cost
-
-            if (
-                neighbor not in visited_cost
-                or new_cost < visited_cost[neighbor]
-            ):
-
-                visited_cost[neighbor] = new_cost
-
-                new_path = path + [neighbor]
-
-                heapq.heappush(
-                    priority_queue,
-                    (
-                        new_cost,
-                        neighbor,
-                        new_path
-                    )
-                )
-
-    return None
+    return distance_cost + fire_risk + fire_distance_penalty
 
 def run_bot4(q, bot_cell, switch_cell):
 
@@ -525,9 +540,6 @@ def run_bot4(q, bot_cell, switch_cell):
         if bot_cell in fire_cells:
             return 0
 
-
-
-
 # placing bot and switch
 def setup_simulation():
     global bot_cell, switch_cell, fire_cells
@@ -578,6 +590,7 @@ def setup_simulation():
     fire_cells.append((init_fire_cell_row, init_fire_cell_column))
 
 
+
 bot1 = False
 bot2 = False
 bot3 = False
@@ -603,7 +616,7 @@ for q in q_values:
         setup_grid()
         setup_simulation()
 
-        original_grid = copy.deepcopy(grid)
+        original_grid = [row[:] for row in grid]
         original_fire = fire_cells.copy()
         
         grid = [row[:] for row in original_grid]
