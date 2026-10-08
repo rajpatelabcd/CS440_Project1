@@ -152,7 +152,6 @@ def print_colored_grid(grid, visited_set, backtracked_set, current_bot):
         print(" ".join(row_str))
     print("-------------------")
 
-
 def get_neighbors(pos):
     x, y = pos
     neighbors = {}

@@ -4,6 +4,8 @@ from collections import deque
 import matplotlib.pyplot as plt
 import copy
 import time
+import heapq
+
 
 start_time = time.perf_counter()
 
@@ -23,7 +25,7 @@ backtracked = set()
 stack = deque()
 visited = set() 
 
-GRID_SIZE = 10
+GRID_SIZE = 30
 
 grid = [['*' for _ in range(GRID_SIZE)] for _ in range(GRID_SIZE)]
 
@@ -33,6 +35,21 @@ switch_cell = ()
 def reset_grid():
     global grid
     grid = [['*' for _ in range(GRID_SIZE)] for _ in range(GRID_SIZE)]
+
+#  find valid dead ends and add to list 
+def update_dead_ends(dead_ends):
+    for grid_row, row in enumerate(grid):
+        for grid_column, val in enumerate(row):           
+            r = (grid_row, grid_column)
+            neighbors2 = get_neighbors(r)
+            opened_neighbors = sum(
+                1
+                for r, c in neighbors2.values()
+                if grid[r][c] == '.'
+            )
+            if (opened_neighbors == 1) and (grid[grid_row][grid_column] == '.'):
+                dead_ends.append((grid_row, grid_column))
+
 
 def setup_grid():
 
@@ -83,22 +100,10 @@ def setup_grid():
                 valid_cells_set.add(n)
 
     dead_ends = []
-
-    #  find valid dead ends and add to list 
-    for grid_row, row in enumerate(grid):
-        for grid_column, val in enumerate(row):           
-            r = (grid_row, grid_column)
-            neighbors2 = get_neighbors(r)
-            opened_neighbors = sum(
-                1
-                for r, c in neighbors2.values()
-                if grid[r][c] == '.'
-            )
-            if (opened_neighbors == 1) and (grid[grid_row][grid_column] == '.'):
-                dead_ends.append((grid_row, grid_column))
-
+    update_dead_ends(dead_ends)
     # for random dead ends open one of the neighbor cell until half list is done
     for i in range (len(dead_ends) // 2):
+        update_dead_ends(dead_ends)
         rand_num = random.randint(0, len(dead_ends) - 1)
         dead_end_neighbors = get_neighbors(dead_ends[rand_num])
 
@@ -302,14 +307,17 @@ def run_bot(bot_number, q, bot_cell, switch_cell):
                 grid[r5][c5] = 'f'
                 if bot_cell in fire_cells:
                     return 0
-                fire_cells.append(n)  
+                fire_cells.append(n)
+                
+        if grid[r7][c7] == 'f':
+            # print("BOT CAUGHT FIRE!")
+            return 0
         
         # print_colored_grid(grid, visited, backtracked, bot_cell)
 
         # time.sleep(SPEED)
 
 # placing bot and switch
-
 def setup_simulation():
     global bot_cell, switch_cell, fire_cells
 
@@ -352,13 +360,11 @@ def setup_simulation():
         r3 = random.randint(0, len(open_cells) - 1)
         init_fire_cell = open_cells[r3]
         init_fire_cell_row, init_fire_cell_column = init_fire_cell
-        break
+
 
     grid[init_fire_cell_row][init_fire_cell_column] = 'f'
     fire_cells = []
     fire_cells.append((init_fire_cell_row, init_fire_cell_column))
-
-
 
 
 bot1 = False
@@ -368,6 +374,7 @@ bot3 = False
 bot1_results = {}
 bot2_results = {}
 bot3_results = {}
+bot4_results = {}
 
 
 q_values = [x / 10 for x in range(11)]
@@ -378,6 +385,7 @@ for q in q_values:
     success_count1 = 0
     success_count2 = 0
     success_count3 = 0
+    success_count4 = 0
 
     for r in range(100):
         reset_grid()
@@ -398,14 +406,20 @@ for q in q_values:
         grid = [row[:] for row in original_grid]
         fire_cells = original_fire.copy()
         res3 = run_bot(3, q, bot_cell, switch_cell)
+
+        grid = [row[:] for row in original_grid]
+        fire_cells = original_fire.copy()
+        res4 = run_bot4(q, bot_cell, switch_cell)
         
         success_count1 += res1
         success_count2 += res2
         success_count3 += res3
+        success_count4 += res4
     
     bot1_results[q] = success_count1   
     bot2_results[q] = success_count2
     bot3_results[q] = success_count3
+    bot4_results[q] = success_count4
 
 print(f'the result for bot 1')
 print(bot1_results)
@@ -413,12 +427,13 @@ print(f'the result for bot 2')
 print(bot2_results)
 print(f'the result for bot 3')
 print(bot3_results)
-
-
+print(f'the result for bot 4')
+print(bot4_results)
 
 plt.plot(bot1_results.keys(), bot1_results.values(), marker='o', label='Bot 1')
 plt.plot(bot2_results.keys(), bot2_results.values(), marker='o', label='Bot 2')
 plt.plot(bot3_results.keys(), bot3_results.values(), marker='o', label='Bot 3')
+plt.plot(bot4_results.keys(), bot4_results.values(), marker='o', label='Bot 4')
 
 end_time = time.perf_counter()
 
