@@ -73,8 +73,7 @@ def setup_grid():
 
         valid_cell_row, valid_cell_column = valid_cell_to_open
 
-        # check whether this cell is already open
-        if grid[valid_cell_row][valid_cell_column] == '.':
+        if(grid[valid_cell_row][valid_cell_column] == '.'):
             continue
 
         neighbors = get_neighbors(valid_cell_to_open)
@@ -84,8 +83,7 @@ def setup_grid():
             if grid[r][c] == '.'
         )
 
-        # cell must have exactly one open neighbor
-        if opened_neighbors != 1:
+        if(opened_neighbors != 1):
             continue
 
         # open the selected cell
@@ -102,37 +100,33 @@ def setup_grid():
     update_dead_ends(dead_ends)
     dead_ends = set(dead_ends)
 
-    target = len(dead_ends) // 2
+    to_remove = len(dead_ends) // 2
+    while len(dead_ends) > to_remove:
 
-    while len(dead_ends) > target:
         cell = random.choice(tuple(dead_ends))
-
-        closed_neighbors = [
-            n for n in get_neighbors(cell).values()
-            if grid[n[0]][n[1]] == '*'
-        ]
-
+        closed_neighbors = [] 
+        for n in get_neighbors(cell).values():
+            row = n[0]
+            col = n[1]
+            if (grid[row][col] == '*'):
+                closed_neighbors.append(n)
+        
         opened = random.choice(closed_neighbors)
         r, c = opened
         grid[r][c] = '.'
+        changed = [opened, *get_neighbors(opened).values()]
 
-        # Only these cells can have changed dead-end status.
-        affected = [opened, *get_neighbors(opened).values()]
-
-        for position in affected:
-            r, c = position
-            dead_ends.discard(position)
-
-            if grid[r][c] != '.':
+        for i in changed:
+            r1, c1 = i
+            dead_ends.discard(i)
+            if (grid[r1][c1] != '.'):
                 continue
-
-            open_count = sum(
+            open_count = sum (
                 grid[nr][nc] == '.'
-                for nr, nc in get_neighbors(position).values()
+                for nr, nc in get_neighbors(i).values()
             )
-
-            if open_count == 1:
-                dead_ends.add(position)
+            if(open_count == 1): 
+                dead_ends.add(i)
 
 def print_colored_grid(grid, visited_set, backtracked_set, current_bot):
     print("\n--- Grid Update ---")
@@ -162,9 +156,7 @@ def get_neighbors(pos):
 
     return neighbors
 
-# listing open and closed cell 
 setup_grid()
-
 fringe = deque()
 
 def find_best_path(b_cell, s_cell, isbot3, ):
@@ -304,7 +296,7 @@ def run_bot(bot_number, q, bot_cell, switch_cell):
                 if n not in visited_neighbors:
                     visited_neighbors.add(n)
                     r4, c4 = n
-                    if grid[r4][c4] != '.':
+                    if (grid[r4][c4] != '.'):
                         continue
                     r4, c4 = n
                     neighbors_of_cell_to_fire = get_neighbors(n)
@@ -340,199 +332,131 @@ def run_bot(bot_number, q, bot_cell, switch_cell):
 
         # time.sleep(SPEED)
 
-def calculate_fire_risk(cell, q):
+def fire_risk(cell, q):
 
     neighbors = get_neighbors(cell)
 
-    fire_neighbors = 0
+    neighbors_on_fire = 0
+    for n in neighbors.values():
+        r, c = n 
 
-    for neighbor in neighbors.values():
-        r, c = neighbor
-
-        if grid[r][c] == 'f':
-            fire_neighbors += 1
-
-    probability = 1 - (1 - q) ** fire_neighbors
-
+        if(grid[r][c] == 'f'):
+            neighbors_on_fire += 1
+    
+    probability = 1 - (1 - q) ** neighbors_on_fire
     return probability
 
-def calculate_fire_distances():
-    distances = {}
+def fire_distance():
 
-    queue = deque()
+    fire_distances = {}
+    q = deque()
 
-    for fire in fire_cells:
-        distances[fire] = 0
-        queue.append(fire)
+    for f in fire_cells:
+        fire_distances[f] = 0
+        q.append(f)
 
-    while queue:
-        cell = queue.popleft()
-
-        for neighbor in get_neighbors(cell).values():
-            if neighbor not in distances:
-                distances[neighbor] = distances[cell] + 1
-                queue.append(neighbor)
-
-    return distances
+    while q: 
+        cell = q.popleft()
+        for n in get_neighbors(cell).values():
+            if n not in fire_distances:
+                fire_distances[n] = fire_distances[cell] + 1
+                q.append(n)
+    return fire_distances
 
 def find_best_path_bot4(bot_cell, switch_cell, q):
 
-    priority_queue = []
-
-    fire_distances = calculate_fire_distances()
-
-    heapq.heappush(
-        priority_queue,
-        (0, bot_cell, [bot_cell])
-    )
+    pq = []
+    fire_distances = fire_distance()
+    heapq.heappush(pq, (0, bot_cell, [bot_cell]))
 
     visited_cost = {}
-
-    while priority_queue:
-
-        total_cost, current, path = heapq.heappop(priority_queue)
-
-        if current == switch_cell:
+  
+    while pq:
+        total_cost, current, path = heapq.heappop(pq)
+        if(current == switch_cell):
             return path
 
-        if current in visited_cost and total_cost >= visited_cost[current]:
+        if (current in visited_cost) and (total_cost >= visited_cost[current]):
             continue
-
+        
         visited_cost[current] = total_cost
+        
+        for n in get_neighbors(current).values():
 
-        for neighbor in get_neighbors(current).values():
+            r, c = n 
 
-            r, c = neighbor
-
-            if grid[r][c] != '.' and neighbor != switch_cell:
+            if (grid[r][c] != '.') and (n != switch_cell):
                 continue
-
-            cell_cost = calculate_cell_cost(
-                neighbor,
-                q,
-                fire_distances
-            )
-
+            cell_cost = calculate_cell_cost(n, q, fire_distances)
+            
             new_cost = total_cost + cell_cost
+            new_path = path + [n]
 
-            new_path = path + [neighbor]
+            heapq.heappush(pq, (new_cost, n, new_path))
 
-            heapq.heappush(
-                priority_queue,
-                (new_cost, neighbor, new_path)
-            )
 
     return None
 
-def calculate_cell_cost(cell, q, fire_distances):
+def calculate_cell_cost(cell, q, fire_distance):
+    normal_cost = 1
+    cell_fire_risk = fire_risk(cell, q)
+    distance_from_fire = fire_distance.get(cell, GRID_SIZE * 2)
+    fire_distance_penalty = 5 / (distance_from_fire + 1)
 
-    # Normal movement cost
-    distance_cost = 1
-
-    # Current fire probability
-    fire_risk = calculate_fire_risk(cell, q)
-
-    # Distance from nearest fire
-    d = fire_distances.get(cell, GRID_SIZE * 2)
-
-    # Stronger penalty for being close to fire
-    fire_distance_penalty = 5 / (d + 1)
-
-    return distance_cost + fire_risk + fire_distance_penalty
+    return normal_cost + cell_fire_risk + fire_distance_penalty
 
 def run_bot4(q, bot_cell, switch_cell):
-
     while True:
 
-        # Find safest/shortest path using Dijkstra
-        current_path = find_best_path_bot4(
-            bot_cell,
-            switch_cell,
-            q
-        )
+        dijkstra_path = find_best_path_bot4(bot_cell, switch_cell, q)
 
-        # No possible path
-        if current_path is None:
+        if(dijkstra_path is None):
             return 0
-
-        # If we're already at the switch
-        if bot_cell == switch_cell:
+        if(bot_cell == switch_cell):
             return 1
 
-        # Move one step along the path
-        if len(current_path) < 2:
+        if(len(dijkstra_path) < 2):
             return 0
-
-        bot_cell = current_path[1]
-
-        # Check if we reached switch
-        if bot_cell == switch_cell:
+        bot_cell = dijkstra_path[1]
+        if(bot_cell == switch_cell):
             return 1
-
+        
         r, c = bot_cell
 
-        # Bot stepped into fire
-        if grid[r][c] == 'f':
+        if(grid[r][c] == 'f'):
             return 0
-
-        # Bot must be on an open cell
-        if grid[r][c] not in ('.', 's', 'b'):
+        if(grid[r][c] not in ('.', 's', 'b')):
             return 0
-
-        # ----------------------------------------
-        # FIRE SPREADS
-        # ----------------------------------------
-
-        temp_fire_cells = []
-        visited_neighbors = set()
+        temp = []
+        visited = set()
 
         for fire_cell in fire_cells:
-
             fire_cell_neighbors = get_neighbors(fire_cell)
-
             for n in fire_cell_neighbors.values():
-
-                if n in visited_neighbors:
+                if n in visited:
                     continue
-
                 r4, c4 = n
-
                 # Don't spread fire into bot or switch
-                if grid[r4][c4] in ('b', 's'):
-                    visited_neighbors.add(n)
+                if(grid[r4][c4] in ('b', 's')):
+                    visited.add(n)
                     continue
-
                 neighbors_of_cell_to_fire = get_neighbors(n)
-
                 k = 0
-
                 for l in neighbors_of_cell_to_fire.values():
-
                     r5, c5 = l
-
                     if grid[r5][c5] == 'f':
                         k += 1
-
                 probability = 1 - (1 - q) ** k
-
                 flammability = random.random()
-
-                if probability > flammability:
-
+                if(probability > flammability):
                     if grid[r4][c4] == '.':
-                        temp_fire_cells.append(n)
-
-                visited_neighbors.add(n)
-
+                        temp.append(n)
+                visited.add(n)
         # Actually spread the fire
-        for n in temp_fire_cells:
-
+        for n in temp:
             r5, c5 = n
-
-            if grid[r5][c5] not in ('f', 'b', 's'):
-
+            if(grid[r5][c5] not in ('f', 'b', 's')):
                 grid[r5][c5] = 'f'
-
                 fire_cells.append(n)
 
         # Bot caught fire
@@ -589,7 +513,6 @@ def setup_simulation():
     fire_cells.append((init_fire_cell_row, init_fire_cell_column))
 
 
-
 bot1 = False
 bot2 = False
 bot3 = False
@@ -615,7 +538,7 @@ for q in q_values:
         setup_grid()
         setup_simulation()
 
-        original_grid = [row[:] for row in grid]
+        original_grid = copy.deepcopy(grid)
         original_fire = fire_cells.copy()
         
         grid = [row[:] for row in original_grid]
